@@ -154,7 +154,7 @@ public class PlayerStats : MonoBehaviour {
 	}
 
 	void Update(){
-		Health -= 1 * Time.deltaTime;
+		//Health -= 1 * Time.deltaTime;
 	}
 
 	//Saves player data to file
