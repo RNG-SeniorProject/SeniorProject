@@ -12,16 +12,18 @@ public class CameraController : MonoBehaviour {
 	[SerializeField]
 	private Transform followXForm;
 	[SerializeField]
-
 	private Vector3 lookDir;
-	private Vector3 targetPosition;
+	[SerializeField]
+	private float mouseRotSpeed;
 
+	private Vector3 targetPosition;
 	private Vector3 velocityCamSmooth = Vector2.zero;
+
 	[SerializeField]
 	private float camSmoothDampTime = 0.1f;
 
 	void Start () {
-		followXForm = GameObject.FindWithTag ("Player").transform;
+		followXForm = GameObject.FindWithTag ("Player").transform.Find("Follow");
 		lookDir = followXForm.forward;
 	}
 
@@ -41,6 +43,8 @@ public class CameraController : MonoBehaviour {
 		CompensateForWalls (characterOffset, ref targetPosition);
 
 		smoothPosition(this.transform.position, targetPosition);
+
+		this.transform.RotateAround (followXForm.position, Vector3.up, Input.GetAxis("Mouse X") * mouseRotSpeed * Time.deltaTime);
 
 		transform.LookAt (followXForm);
 	}

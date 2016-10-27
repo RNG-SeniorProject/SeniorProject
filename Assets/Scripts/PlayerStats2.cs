@@ -4,11 +4,20 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-public class PlayerStats : MonoBehaviour {
+public class PlayerStats2 : MonoBehaviour {
 
-	public static PlayerStats control;
+	public static PlayerStats2 control;
+	public static GameObject plr;
 
+	private Vector3 respawnPos;
+	private Vector3 respawnRot;
+
+	#region Stat Variables/Properties
+
+	#region Main Base Stats
 	//Main base stats
+	private float _level;
+
 	private float _strength;
 	private float _dexterity;
 	private float _constitution;
@@ -16,6 +25,11 @@ public class PlayerStats : MonoBehaviour {
 	private float _charisma;
 
 	//Main stat properties
+	public float Level{
+		get{ return _level;}
+		set{ _level = value;}
+	}
+
 	public float Strength{
 		get{ return _strength;}
 		set{ _strength = value;}
@@ -40,7 +54,9 @@ public class PlayerStats : MonoBehaviour {
 		get{ return _charisma;}
 		set{ _charisma = value;}
 	}
+	#endregion
 
+	#region Secondary Stats
 	//Secondary stats
 	private float _resistance;
 	private float _speed;
@@ -48,6 +64,9 @@ public class PlayerStats : MonoBehaviour {
 	private float _range;
 	private float _accuracy;
 	private float _radar;
+
+	//Make into an enum
+	private float _coat;
 
 	//Secondary Stat properties
 	public float Resistance{
@@ -75,26 +94,53 @@ public class PlayerStats : MonoBehaviour {
 		set{ _radar = value;}
 	}
 
-	//Make into an enum
-	private float _coat;
-
 	public float Coat{
 		get{ return _coat;}
 		set{ _coat = value;}
 	}
+	#endregion
 
+	#region Volatile Stats
 	//Volatile stat section
 
+	//Some defaults for volatile stats
+	[SerializeField]
+	private float maxHealthDef;
+	[SerializeField]
+	private float maxEnergyDef;
+	[SerializeField]
+	private float maxHungerDef;
+	[SerializeField]
+	private float maxThirstDef;
+
+	[SerializeField]
+	private float healthModDef;
+	[SerializeField]
+	private float hungerModDef;
+	[SerializeField]
+	private float thirstModDef;
+
 	//Max of volatile stats
+	[SerializeField]
 	private float _maxHealth;
+	[SerializeField]
 	private float _maxEnergy;
 
 	//Current value of volatile stats
-	public float _health;
+	[SerializeField]
+	private float _health;
+	[SerializeField]
 	private float _energy;
 
+	[SerializeField]
 	private float _hunger;
+	[SerializeField]
 	private float _thirst;
+
+	//Overtime modifier values
+	private float _healthMod;
+	private float _hungerMod;
+	private float _thirstMod;
 
 	//Volitile Stat properties
 	public float MaxHealth{
@@ -139,6 +185,24 @@ public class PlayerStats : MonoBehaviour {
 		set{ _thirst = value;}
 	}
 
+	public float HealthMod{
+		get{ return _healthMod;}
+		set{ _healthMod = value;}
+	}
+
+	public float HungerMod{
+		get{ return _hungerMod;}
+		set{ _hungerMod = value;}
+	}
+
+	public float ThirstMod{
+		get{ return _thirstMod;}
+		set{ _thirstMod = value;}
+	}
+	#endregion
+
+	#endregion
+
 	//Makes sure we only have 1 Player stat that continuous between scenes
 	void Awake(){
 		if (control == null) {
@@ -147,14 +211,55 @@ public class PlayerStats : MonoBehaviour {
 		} else if (control != this){
 			Destroy (this);
 		}
+			
+		MaxHealth = maxHealthDef;
+		Health = MaxHealth;
 
+		MaxEnergy = maxEnergyDef;
+		Energy = MaxEnergy;
+		Hunger = maxHungerDef;
+		Thirst = maxThirstDef;
 
-		MaxHealth = 100;
-		Health = 100;
+		plr = GameObject.FindWithTag ("Player").transform.parent.gameObject;
+		respawnPos = plr.transform.position;
+		respawnRot = plr.transform.eulerAngles;
 	}
 
 	void Update(){
-		//Health -= 1 * Time.deltaTime;
+		HungerMod = hungerModDef;
+
+		/*
+		Hunger -= HungerMod * Time.deltaTime;
+		Thirst -= thirstModDef * Time.deltaTime;
+	 
+		float temp = 0;
+		if (Hunger > 81) {
+			temp = -.4f;
+		} else if (Hunger < 40){
+			temp = .8f;
+		}
+
+		HealthMod = healthModDef + temp;
+
+		Health -= HealthMod * Time.deltaTime;
+		*/
+
+		if (Health <= 0) {
+			respawnPlr ();
+		}
+	}
+
+	public void respawnPlr(){
+		plr.transform.position = respawnPos;
+		plr.transform.eulerAngles = respawnRot;
+
+		MaxHealth = maxHealthDef;
+		Health = MaxHealth;
+
+		MaxEnergy = maxEnergyDef;
+		Energy = MaxEnergy;
+		Hunger = maxHungerDef;
+		Thirst = maxThirstDef;
 	}
 
 	//Saves player data to file
@@ -184,7 +289,7 @@ public class PlayerStats : MonoBehaviour {
 }
 
 [Serializable]
-class PlayerData{
+class PlayerData2{
 	//Main base stats
 	public float strength;
 	public float dexterity;
