@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public abstract class Attack: MonoBehaviour {
 	[SerializeField]
-	protected float baseDamage;
+	public float baseDamage;
 	[SerializeField]
 	protected float baseCooldown;
 	[SerializeField]
@@ -13,7 +13,7 @@ public abstract class Attack: MonoBehaviour {
 	protected bool cooldown;
 
 	[SerializeField]
-	protected List<GameObject> effects;
+	public List<GameObject> effects;
 
 	[SerializeField]
 	protected bool onCooldown;
