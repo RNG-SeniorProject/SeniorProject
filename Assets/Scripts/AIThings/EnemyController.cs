@@ -60,22 +60,18 @@ public class EnemyController : MonoBehaviour {
 				if (gameObject.transform.position.x < enemyLeader.transform.position.x && gameObject.transform.position.z < enemyLeader.transform.position.z) {
 					if ((gameObject.transform.position - enemyLeader.transform.position).magnitude > gap) {
 						this.target = new Vector3 (enemyLeader.transform.position.x - id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z - id * gap);
-						Debug.Log ("Option 1");
 					}
 				} else if (gameObject.transform.position.x < enemyLeader.transform.position.x && gameObject.transform.position.z >= enemyLeader.transform.position.z) {
 					if ((gameObject.transform.position - enemyLeader.transform.position).magnitude > gap) {
 						this.target = new Vector3 (enemyLeader.transform.position.x - id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + id * gap);
-						Debug.Log ("Option 2");
 					}
 				} else if (gameObject.transform.position.x >= enemyLeader.transform.position.x && gameObject.transform.position.z < enemyLeader.transform.position.z) {
 					if ((gameObject.transform.position - enemyLeader.transform.position).magnitude > gap) {
 						this.target = new Vector3 (enemyLeader.transform.position.x + id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z - id * gap);
-						Debug.Log ("Option 3");
 					}
 				} else {
 					if ((gameObject.transform.position - enemyLeader.transform.position).magnitude > gap) {
 						this.target = new Vector3 (enemyLeader.transform.position.x + id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + id * gap);
-						Debug.Log ("Option 4");
 					}
 				}
 			}
@@ -94,4 +90,7 @@ public class EnemyController : MonoBehaviour {
 		// this.target = new Vector3(targetObject.transform.position.x, targetObject.transform.position.y, targetObject.transform.position.z);
 	}
 
+	public bool IsChasing() {
+		return targeted;
+	}
 }
