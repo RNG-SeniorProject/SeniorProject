@@ -20,7 +20,7 @@ public class DOTEffect : Effect {
 	IEnumerator performEffect(GameObject chr){
 		float timer = 0f;
 
-		while (timer < duration){
+		while (timer < duration && chr != null){
 			chr.GetComponent<Destructible>().takeDamage (damagePerTic);
 			timer += 1/tickPerSec;
 			yield return new WaitForSeconds (1/tickPerSec);	

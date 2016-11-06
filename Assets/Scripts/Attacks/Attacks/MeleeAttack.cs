@@ -10,6 +10,8 @@ public class MeleeAttack: Attack {
 
 	protected List<GameObject> enemiesInRange;
 
+	private string tagToGet = "Enemy";
+
 	public override void performAttack(GameObject chr){
 		enemiesInRange = new List<GameObject> ();
 
@@ -18,8 +20,6 @@ public class MeleeAttack: Attack {
 		}
 
 		goOnCooldown ();
-
-		string tagToGet = "Enemy";
 
 		if (chr.CompareTag("Enemy")) {
 			tagToGet = "Player";

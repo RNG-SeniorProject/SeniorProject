@@ -5,8 +5,6 @@ public class CharacterStats : Destructible {
 	private float _level;
 
 	[SerializeField]
-	protected float maxEnergyDef;
-	[SerializeField]
 	private float _maxEnergy;
 	[SerializeField]
 	private float _energy;
@@ -27,10 +25,8 @@ public class CharacterStats : Destructible {
 	}
 
 	void Awake(){
-		MaxHealth = maxHealthDef;
 		Health = MaxHealth;
 
-		MaxEnergy = maxEnergyDef;
 		Energy = MaxEnergy;
 	}
 }

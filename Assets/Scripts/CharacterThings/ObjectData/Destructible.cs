@@ -4,11 +4,6 @@ using System.Collections;
 public class Destructible : MonoBehaviour {
 
 	[SerializeField]
-	protected float maxHealthDef;
-	[SerializeField]
-	protected float healthModDef;
-
-	[SerializeField]
 	private float _maxHealth;
 	[SerializeField]
 	private float _health;
@@ -18,7 +13,7 @@ public class Destructible : MonoBehaviour {
 	private bool _isDead;
 
 	[SerializeField]
-	protected PickUpable[] drops;
+	protected GameObject[] drops;
 	[SerializeField]
 	protected float[] dropRates;
 
@@ -43,7 +38,6 @@ public class Destructible : MonoBehaviour {
 	}
 
 	void Awake(){
-		MaxHealth = maxHealthDef;
 		Health = MaxHealth;
 	}
 
@@ -63,9 +57,17 @@ public class Destructible : MonoBehaviour {
 
 	protected virtual void Die(){
 		isDead = true;
+		dropStuff ();
+		Destroy (gameObject);
 	}
 
 	protected void dropStuff(){
-		//Drop stuff
+		if (drops.Length < 1) {
+			return;
+		}
+
+		foreach (GameObject drop in drops){
+			Instantiate(drop, transform.position, transform.rotation);
+		}
 	}
 }

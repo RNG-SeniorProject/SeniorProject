@@ -137,10 +137,7 @@ public class PlayerStats : CharacterStats {
 			Destroy (this);
 		}
 
-		MaxHealth = maxHealthDef;
 		Health = MaxHealth;
-
-		MaxEnergy = maxEnergyDef;
 		Energy = MaxEnergy;
 		Hunger = maxHungerDef;
 		Thirst = maxThirstDef;
@@ -155,7 +152,7 @@ public class PlayerStats : CharacterStats {
 		Hunger += hungerModDef;
 
 		if (Health <= 0) {
-			respawnPlr ();
+			//respawnPlr ();
 		}
 	}
 
@@ -163,10 +160,7 @@ public class PlayerStats : CharacterStats {
 		plr.transform.position = respawnPos;
 		plr.transform.eulerAngles = respawnRot;
 
-		MaxHealth = maxHealthDef;
 		Health = MaxHealth;
-
-		MaxEnergy = maxEnergyDef;
 		Energy = MaxEnergy;
 		Hunger = maxHungerDef;
 		Thirst = maxThirstDef;
