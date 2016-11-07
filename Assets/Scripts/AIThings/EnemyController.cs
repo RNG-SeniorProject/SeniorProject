@@ -54,6 +54,7 @@ public class EnemyController : MonoBehaviour {
 		if (targeted) {
 			this.target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
 		} else {
+			/*
 			if (id == 0) {
 				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
 			} else {
@@ -74,7 +75,16 @@ public class EnemyController : MonoBehaviour {
 						this.target = new Vector3 (enemyLeader.transform.position.x + id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + id * gap);
 					}
 				}
+			}*/
+
+			if (id == 0) {
+				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
+			} else if (id == 1) {
+				this.target = new Vector3 (enemyLeader.transform.position.x + gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + gap);
+			} else if (id == 2) {
+				this.target = new Vector3 (enemyLeader.transform.position.x - gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + gap);
 			}
+
 		}
 
 		agent.destination = target;
