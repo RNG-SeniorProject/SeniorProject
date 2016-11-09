@@ -23,7 +23,7 @@ public class CharacterLogic : MonoBehaviour {
 	private int m_LocomotionId = 0;
 
 	void Start () {
-		animator = GetComponent<Animator> ();
+		animator = GetComponentInChildren<Animator> ();
 
 		if (animator.layerCount >= 2) {
 			animator.SetLayerWeight (1, 1);

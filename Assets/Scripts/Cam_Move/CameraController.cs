@@ -23,8 +23,8 @@ public class CameraController : MonoBehaviour {
 	private float camSmoothDampTime = 0.1f;
 
 	void Start () {
-		followXForm = GameObject.FindWithTag ("Player").transform.Find("Follow");
-		lookDir = followXForm.forward;
+		//followXForm = GameObject.FindWithTag ("Player").transform.Find("Follow");
+		//lookDir = followXForm.forward;
 	}
 
 	void Update () {
@@ -38,13 +38,15 @@ public class CameraController : MonoBehaviour {
 		lookDir.y = 0;
 		lookDir.Normalize ();
 
-		targetPosition = characterOffset + followXForm.up * distanceUp - lookDir * distanceAway;
+		targetPosition = characterOffset + Vector3.up * distanceUp - lookDir * distanceAway;
 
 		CompensateForWalls (characterOffset, ref targetPosition);
 
 		smoothPosition(this.transform.position, targetPosition);
 
-		this.transform.RotateAround (followXForm.position, Vector3.up, Input.GetAxis("Mouse X") * mouseRotSpeed * Time.deltaTime);
+		Debug.DrawRay (followXForm.position, targetPosition - followXForm.position);
+
+		//this.transform.RotateAround (followXForm.position, Vector3.up, Input.GetAxis("Mouse X") * mouseRotSpeed * Time.deltaTime);
 
 		transform.LookAt (followXForm);
 	}
