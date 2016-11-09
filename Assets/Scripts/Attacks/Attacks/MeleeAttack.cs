@@ -21,14 +21,20 @@ public class MeleeAttack: Attack {
 
 		goOnCooldown ();
 
-		if (chr.CompareTag("Enemy")) {
+		/*if (chr.CompareTag("Enemy")) {
 			tagToGet = "Player";
-		} 
+		}*/
 
 		Collider[] enemies = Physics.OverlapSphere(chr.transform.position, reach);
 
-		foreach (Collider hit in enemies) {
+		/*foreach (Collider hit in enemies) {
 			if (hit.gameObject.CompareTag(tagToGet)) {
+				enemiesInRange.Add (hit.gameObject);
+			}
+		}*/
+
+		foreach (Collider hit in enemies) {
+			if (hit.gameObject.GetComponent<Destructible>() != null) {
 				enemiesInRange.Add (hit.gameObject);
 			}
 		}
