@@ -53,6 +53,7 @@ public class EnemyController : MonoBehaviour {
 
 		if (targeted) {
 			this.target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
+			agent.SetDestination(target);
 		} else {
 			/*
 			if (id == 0) {
@@ -84,10 +85,8 @@ public class EnemyController : MonoBehaviour {
 			} else if (id == 2) {
 				this.target = new Vector3 (enemyLeader.transform.position.x - gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + gap);
 			}
-
+			agent.SetDestination (target);
 		}
-
-		agent.destination = target;
 	}
 
 	public void StartChasing() {

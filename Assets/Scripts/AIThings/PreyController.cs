@@ -38,11 +38,10 @@ public class PreyController : MonoBehaviour {
 
 		if (targeted) {
 			this.target = transform.position - targetDir;
+			agent.SetDestination (target);
 		} else {
-			this.target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+			agent.ResetPath ();
 		}
-
-		agent.destination = target;
 	}
 
 	public void StartFleeing() {
