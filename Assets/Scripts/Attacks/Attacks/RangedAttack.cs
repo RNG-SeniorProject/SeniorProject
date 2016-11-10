@@ -7,6 +7,8 @@ public class RangedAttack : Attack {
 	protected GameObject projectile;
 	[SerializeField]
 	protected float forwardStr;
+	[SerializeField]
+	protected CameraController cam;
 
 	public string tagToGet = "Enemy";
 
@@ -22,10 +24,10 @@ public class RangedAttack : Attack {
 			tagToGet = "Player";
 		}
 
-		GameObject arrow = (GameObject)Instantiate(projectile, chr.transform.position + new Vector3(0,1f,0), chr.transform.rotation);
+		GameObject arrow = (GameObject)Instantiate(projectile, chr.transform.position + new Vector3(0,1f,0), Quaternion.LookRotation(cam.lookDir, Vector3.up));
 		arrow.GetComponent<ProjectileCollision> ().source = chr;
 		arrow.GetComponent<ProjectileCollision> ().atkInfo = this;
 
-		arrow.GetComponent<Rigidbody> ().AddForce (transform.forward * forwardStr);
+		arrow.GetComponent<Rigidbody> ().AddForce (arrow.transform.forward * forwardStr);
 	}
 }
