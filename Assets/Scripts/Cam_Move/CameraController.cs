@@ -48,9 +48,13 @@ public class CameraController : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetMouseButtonDown (1)) {
-			state = CamState.Aim;
-			//Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = true;
+			if (state == CamState.Follow) {
+				state = CamState.Aim;
+				//Cursor.lockState = CursorLockMode.Locked;
+				Cursor.visible = true;
+			} else if (state == CamState.Aim) {
+				state = CamState.Follow;
+			}
 		}
 	}
 
