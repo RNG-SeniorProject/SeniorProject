@@ -56,7 +56,7 @@ public class CharacterStats : Destructible {
 
 		if (value != 0 && Energy == 0) {return false;}
 
-		Energy -= value;
+		Energy += value;
 
 		if (transform.tag == "Player") {
 			energySlider.fillAmount = Energy / MaxEnergy;

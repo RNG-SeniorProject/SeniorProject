@@ -10,6 +10,7 @@ public abstract class Food : Interactable {
 
 	public override void interact (GameObject chr){
 		if (use <= 0) {
+			Destroy (gameObject);
 			return;
 		}
 		eat (chr);
