@@ -22,12 +22,18 @@ public class RangedAttack : Attack {
 			tagToGet = "Player";
 		}
 
-		GameObject arrow = (GameObject)Instantiate(projectile, chr.transform.position + new Vector3(0,1f,0), Quaternion.LookRotation(cam.lookDir, Vector3.up));
+		StartCoroutine (createProjectile(.75f, chr));
+
+		return true;
+	}
+
+	IEnumerator createProjectile(float time, GameObject chr){
+		yield return new WaitForSeconds (time);
+
+		GameObject arrow = (GameObject)Instantiate (projectile, chr.transform.position + new Vector3 (0, .4f, 0), Quaternion.LookRotation (cam.lookDir, Vector3.up));
 		arrow.GetComponent<ProjectileCollision> ().source = chr;
 		arrow.GetComponent<ProjectileCollision> ().atkInfo = this;
 
 		arrow.GetComponent<Rigidbody> ().AddForce (arrow.transform.forward * forwardStr);
-
-		return true;
 	}
 }

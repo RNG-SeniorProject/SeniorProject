@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public abstract class Attack: MonoBehaviour {
+	public string animationType;
+
 	[SerializeField]
 	public float baseDamage;
 	[SerializeField]

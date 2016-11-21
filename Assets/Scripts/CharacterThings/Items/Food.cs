@@ -9,11 +9,11 @@ public abstract class Food : Interactable {
 	protected abstract void eat (GameObject chr);
 
 	public override void interact (GameObject chr){
-		if (use <= 0) {
-			Destroy (gameObject);
-			return;
-		}
 		eat (chr);
 		use--;
+
+		if (use <= 0) {
+			Destroy (gameObject);
+		}
 	}
 }
