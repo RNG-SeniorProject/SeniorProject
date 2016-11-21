@@ -1,8 +1,77 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyController : MonoBehaviour {
+public class PredatorController : MonoBehaviour {
 
+	private GameObject player;
+	private GameObject packLeader;
+	private PredatorLeaderController packLeaderController;
+	private NavMeshAgent agent;
+	private bool targeted;
+	private Vector3 target;
+
+	public float chaseRange = 10;
+	public float visionAngle = 60;
+
+	void Start () {
+		player = GameObject.FindWithTag ("Player");
+		if (!player) Debug.Log ("Player not tagged");
+
+		GameObject[] predators = new GameObject[transform.parent.childCount];
+		for (int i = 0; i < predators.Length; i++) {
+			predators [i] = transform.parent.GetChild (i).gameObject;
+			PredatorLeaderController predatorLeaderController = predators [i].GetComponent ("PredatorLeaderController") as PredatorLeaderController;
+			if (predatorLeaderController) {
+				packLeader = predatorLeaderController.gameObject;
+				packLeaderController = predatorLeaderController;
+			}
+		}
+		if (!packLeader) Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
+
+		agent = GetComponent<NavMeshAgent> ();
+
+		targeted = false;
+		target = new Vector3 (this.transform.position.x, this.transform.position.y, this.transform.position.z);
+	}
+
+	void Update () {
+		Vector3 targetDir = player.transform.position - transform.position;
+		float angle = Vector3.Angle (targetDir, transform.forward);
+
+		// if target is within the angle of vision and within chase range
+		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
+			packLeaderController.StartChasing();
+		} else if (targeted && targetDir.magnitude > chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
+			packLeaderController.StopChasing();
+		}
+
+		if (IsChasing ()) {
+			target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
+			agent.SetDestination (target);
+		} else {
+			if ((transform.position - target).magnitude < 5) {
+				target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+				agent.SetDestination (target);
+			}
+		}
+	}
+
+	public void StartChasing () {
+		targeted = true;
+	}
+
+	public bool IsChasing () {
+		return targeted;
+	}
+
+	public void StopChasing () {
+		targeted = false;
+		target = new Vector3 (packLeader.transform.position.x, packLeader.transform.position.y, packLeader.transform.position.z);
+		agent.SetDestination (target);
+	}
+
+
+	/*
 	// private GameObject player;
 	private NavMeshAgent agent;
 	private bool targeted;
@@ -42,7 +111,7 @@ public class EnemyController : MonoBehaviour {
 
 	void Update() {
 		Vector3 targetDir = player.transform.position - transform.position;
-		float angle = Vector3.Angle(targetDir, transform.forward);
+		float angle = Vector3.Angle (targetDir, transform.forward);
 
 		// if target is within the angle of vision and within chase range
 		if (!targeted && angle < followAngle && targetDir.magnitude <= followDistance) {
@@ -55,7 +124,7 @@ public class EnemyController : MonoBehaviour {
 			this.target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
 			agent.SetDestination(target);
 		} else {
-			/*
+			
 			if (id == 0) {
 				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
 			} else {
@@ -76,8 +145,8 @@ public class EnemyController : MonoBehaviour {
 						this.target = new Vector3 (enemyLeader.transform.position.x + id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + id * gap);
 					}
 				}
-			}*/
-
+			}
+			/*
 			if (id == 0) {
 				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
 			} else if (id == 1) {
@@ -85,6 +154,7 @@ public class EnemyController : MonoBehaviour {
 			} else if (id == 2) {
 				this.target = new Vector3 (enemyLeader.transform.position.x - gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + gap);
 			}
+
 			agent.SetDestination (target);
 		}
 	}
@@ -102,4 +172,5 @@ public class EnemyController : MonoBehaviour {
 	public bool IsChasing() {
 		return targeted;
 	}
+	*/
 }

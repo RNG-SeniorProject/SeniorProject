@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyLogic : MonoBehaviour {
+public class PredatorLogic : MonoBehaviour {
 
 	[SerializeField]
 	private Animator animator;
@@ -20,7 +20,7 @@ public class EnemyLogic : MonoBehaviour {
 	private float ver = 0.0f;
 	private AnimatorStateInfo stateInfo;
 
-	private EnemyController enemyController;
+	private PredatorController predatorController;
 
 	private int m_LocomotionId = 0;
 
@@ -33,7 +33,7 @@ public class EnemyLogic : MonoBehaviour {
 
 		m_LocomotionId = Animator.StringToHash ("Base Layer.Locomotion");
 
-		enemyController = GetComponent<EnemyController> ();
+		predatorController = gameObject.GetComponent ("PredatorController") as PredatorController;
 	}
 
 	void Update () {
@@ -42,8 +42,8 @@ public class EnemyLogic : MonoBehaviour {
 
 			//stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
-			if (enemyController.IsChasing ()) {
-				animator.SetFloat ("Speed", 1);
+			if (predatorController.IsChasing ()) {
+				animator.SetFloat ("Speed", 0.2f);
 				animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 			} else {
 				animator.SetFloat ("Speed", 0);
