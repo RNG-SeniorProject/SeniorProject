@@ -11,13 +11,12 @@ public class AttackController : MonoBehaviour {
 	protected List<GameObject> activeAttacks;
 
 	private CameraController cam;
-	public Animator animator;
+	private Animator animator;
 
 	void Start(){
 		cam = util.camController;
 
-		if (transform.tag == "Player")
-			animator = gameObject.GetComponent<Animator> ();
+		animator = gameObject.GetComponent<Animator> ();
 	}
 
 	void Update(){
@@ -32,6 +31,7 @@ public class AttackController : MonoBehaviour {
 					}
 
 				} else {
+					if (!util.chrLogic.IsInLocomotion())
 					if (activeAttacks [1].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
 						animator.SetBool ("Ranged", true);

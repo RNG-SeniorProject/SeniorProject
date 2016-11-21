@@ -5,6 +5,7 @@ using System.Collections;
 public class Util : MonoBehaviour{
 	public Camera cam;
 	public CameraController camController;
+	public CharacterLogic chrLogic;
 
 	public PlayerStats plr;
 
