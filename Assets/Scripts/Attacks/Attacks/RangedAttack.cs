@@ -12,13 +12,11 @@ public class RangedAttack : Attack {
 
 	public string tagToGet = "Enemy";
 
-	public override void performAttack (GameObject chr) {
+	public override bool performAttack (GameObject chr) {
 
-		if (onCooldown) {
-			return;
+		if (!base.performAttack (chr)) {
+			return false;
 		}
-
-		goOnCooldown ();
 
 		if (chr.CompareTag("Enemy")) {
 			tagToGet = "Player";
@@ -29,5 +27,7 @@ public class RangedAttack : Attack {
 		arrow.GetComponent<ProjectileCollision> ().atkInfo = this;
 
 		arrow.GetComponent<Rigidbody> ().AddForce (arrow.transform.forward * forwardStr);
+
+		return true;
 	}
 }

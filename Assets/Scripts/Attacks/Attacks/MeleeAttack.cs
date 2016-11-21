@@ -12,14 +12,12 @@ public class MeleeAttack: Attack {
 
 	private string tagToGet = "Enemy";
 
-	public override void performAttack(GameObject chr){
-		enemiesInRange = new List<GameObject> ();
-
-		if (onCooldown) {
-			return;
+	public override bool performAttack(GameObject chr){
+		if (!base.performAttack (chr)) {
+			return false;
 		}
 
-		goOnCooldown ();
+		enemiesInRange = new List<GameObject> ();
 
 		/*if (chr.CompareTag("Enemy")) {
 			tagToGet = "Player";
@@ -48,12 +46,14 @@ public class MeleeAttack: Attack {
 			if (Vector3.Dot (chr.transform.forward.normalized, plrToEnemy.normalized) >= sweep) {
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
-				stats.takeDamage (baseDamage);
+				stats.takeDamage (-baseDamage, true);
 			}
 
 			foreach (GameObject effect in effects) {
 				effect.GetComponent<Effect>().activateEffect (enemy);
 			}
 		}
+
+		return true;
 	}
 }

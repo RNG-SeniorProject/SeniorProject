@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
-public static class Util {
+public class Util : MonoBehaviour{
+	public Camera cam;
+	public CameraController camController;
 
-	public enum StatusCondition {
-		SLEEP,
-		POISONED,
-		INJURED,
-	}
+	public PlayerStats plr;
+
+	public Canvas canvas;
+	public Image plrHealthGui;
+	public Image plrEnergyGui;
+	public Image plrHungerGui;
+	public GameObject enemyHealthPrefab;
 }

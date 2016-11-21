@@ -2,12 +2,13 @@
 using System.Collections;
 
 public class CharacterLogic : MonoBehaviour {
+	public Util util;
 
 	[SerializeField]
 	private Animator animator;
 	[SerializeField]
 	private float directionDampTime = .25f;
-	[SerializeField]
+
 	private CameraController gamecam;
 	[SerializeField]
 	private float directionSpeed = 3.0f;
@@ -27,6 +28,7 @@ public class CharacterLogic : MonoBehaviour {
 
 	void Start () {
 		animator = GetComponentInChildren<Animator> ();
+		gamecam = util.camController;
 
 		if (animator.layerCount >= 2) {
 			animator.SetLayerWeight (1, 1);

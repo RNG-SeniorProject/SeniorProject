@@ -3,13 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class AttackController : MonoBehaviour {
+	public Util util;
+
 	[SerializeField]
 	protected List<GameObject> knownAttacks;
 	[SerializeField]
 	protected List<GameObject> activeAttacks;
 
-	[SerializeField]
-	protected CameraController cam;
+	private CameraController cam;
+
+	void Start(){
+		cam = util.camController;
+	}
 
 	void Update(){
 		if (Input.GetMouseButton (0)) {
