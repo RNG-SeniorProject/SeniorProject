@@ -2,12 +2,13 @@
 using System.Collections;
 
 public class CharacterLogic : MonoBehaviour {
+	public Util util;
 
 	[SerializeField]
 	private Animator animator;
 	[SerializeField]
 	private float directionDampTime = .25f;
-	[SerializeField]
+
 	private CameraController gamecam;
 	[SerializeField]
 	private float directionSpeed = 3.0f;
@@ -18,12 +19,16 @@ public class CharacterLogic : MonoBehaviour {
 	private float direction = 0f;
 	private float hor = 0.0f;
 	private float ver = 0.0f;
+	private float mouseHor = 0.0f;
+	private float mouseVer = 0.0f;
+
 	private AnimatorStateInfo stateInfo;
 
 	private int m_LocomotionId = 0;
 
 	void Start () {
 		animator = GetComponentInChildren<Animator> ();
+		gamecam = util.camController;
 
 		if (animator.layerCount >= 2) {
 			animator.SetLayerWeight (1, 1);
@@ -39,17 +44,26 @@ public class CharacterLogic : MonoBehaviour {
 			hor = Input.GetAxis ("Horizontal");
 			ver = Input.GetAxis ("Vertical");
 
+			mouseHor = Mathf.Clamp(Input.GetAxis ("Mouse X"), -1f, 1f);
+			mouseVer = Input.GetAxis ("Mouse Y");
+
 			stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
 			animator.SetFloat ("Speed", speed);
 			animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+
+			if (gamecam.state == CameraController.CamState.Aim) {
+				Quaternion deltaRotation = Quaternion.Euler (new Vector3(0, rotationDegreePerSecond * mouseHor, 0));
+				this.transform.rotation = Quaternion.Slerp(this.transform.rotation, this.transform.rotation * deltaRotation, 2 * Time.deltaTime);
+			}
 		}
 	}
 
 	void FixedUpdate(){
 		if (IsInLocomotion () && ((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
-			Quaternion deltaRotation = Quaternion.Euler (rotationAmount * Time.deltaTime);
+				
+			Quaternion deltaRotation = Quaternion.Euler ((rotationAmount) * Time.deltaTime);
 			this.transform.rotation = (this.transform.rotation * deltaRotation);
 		}
 	}

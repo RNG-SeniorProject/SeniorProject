@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public abstract class Attack: MonoBehaviour {
+	public string animationType;
+
 	[SerializeField]
 	public float baseDamage;
 	[SerializeField]
@@ -29,6 +31,22 @@ public abstract class Attack: MonoBehaviour {
 		onCooldown = false;
 	}
 
-	public abstract void performAttack (GameObject chr);
+	public bool useEnergy(GameObject chr){
+		return chr.GetComponent<CharacterStats>().useEnergy (energyCost);
+	}
+
+	public virtual bool performAttack (GameObject chr){
+		if (onCooldown) {
+			return false;
+		}
+
+		if (!useEnergy(chr)) {
+			return false;
+		}
+
+		goOnCooldown ();
+
+		return true;
+	}
 
 }

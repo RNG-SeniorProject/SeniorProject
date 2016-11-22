@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,6 +9,9 @@ public class PlayerStats : CharacterStats {
 
 	private Vector3 respawnPos;
 	private Vector3 respawnRot;
+
+	private Image hungerBar;
+	private Image hungerSlider;
 
 	#region Main Base Stats
 	//Main base stats
@@ -52,7 +56,6 @@ public class PlayerStats : CharacterStats {
 
 	private float _range;
 	private float _accuracy;
-	private float _radar;
 
 	//Make into an enum
 	private float _coat;
@@ -78,11 +81,6 @@ public class PlayerStats : CharacterStats {
 		set{ _accuracy = value;}
 	}
 
-	public float Radar{
-		get{ return _radar;}
-		set{ _radar = value;}
-	}
-
 	public float Coat{
 		get{ return _coat;}
 		set{ _coat = value;}
@@ -91,45 +89,31 @@ public class PlayerStats : CharacterStats {
 
 	#region Volatile Stats
 	[SerializeField]
-	private float maxHungerDef;
+	private float MaxHunger;
 	[SerializeField]
-	private float maxThirstDef;
-
-	[SerializeField]
-	private float hungerModDef;
-	[SerializeField]
-	private float thirstModDef;
+	private float hungerModBase;
 
 	[SerializeField]
 	private float _hunger;
 	[SerializeField]
-	private float _thirst;
-
 	private float _hungerMod;
-	private float _thirstMod;
 
 	public float Hunger{
 		get{ return _hunger;}
-		set{ _hunger = Mathf.Clamp(0, 1000, value);}
-	}
-
-	public float Thirst{
-		get{ return _thirst;}
-		set{ _thirst = Mathf.Clamp(0, 1000, value);}
+		set{ _hunger = Mathf.Clamp(value, 0, 1000);}
 	}
 
 	public float HungerMod{
 		get{ return _hungerMod;}
 		set{ _hungerMod = value;}
 	}
-
-	public float ThirstMod{
-		get{ return _thirstMod;}
-		set{ _thirstMod = value;}
-	}
 	#endregion
 
-	void Awake(){
+	void Start(){
+		Init ();
+	}
+
+	protected override void Init () {
 		if (control == null) {
 			DontDestroyOnLoad (gameObject);	
 			control = this;
@@ -137,32 +121,48 @@ public class PlayerStats : CharacterStats {
 			Destroy (this);
 		}
 
-		Health = MaxHealth;
-		Energy = MaxEnergy;
-		Hunger = maxHungerDef;
-		Thirst = maxThirstDef;
+		base.Init ();
 
-		plr = GameObject.FindWithTag ("Player");
+		hungerBar = util.plrHungerGui;
+		hungerSlider = hungerBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
+
+		Hunger = MaxHunger;
+
+		plr = util.plr.gameObject;
 
 		respawnPos = plr.transform.position;
 		respawnRot = plr.transform.eulerAngles;
 	}
 
 	void Update(){
-		Hunger += hungerModDef;
+		update ();
+	}
+
+	protected override void update(){
+		base.update ();
+		changeHunger (hungerModBase * Time.deltaTime);
+
+		if ((Hunger/MaxHunger) < .25f) {
+			takeDamage (-30 * Time.deltaTime, true);
+		}
 
 		if (Health <= 0) {
 			//respawnPlr ();
 		}
 	}
 
+	public void changeHunger(float value){
+		if (isDead) {return;}
+
+		Hunger += value;
+
+		hungerSlider.fillAmount = Hunger / MaxHunger;
+	}
+
 	public void respawnPlr(){
 		plr.transform.position = respawnPos;
 		plr.transform.eulerAngles = respawnRot;
 
-		Health = MaxHealth;
-		Energy = MaxEnergy;
-		Hunger = maxHungerDef;
-		Thirst = maxThirstDef;
+		Init ();
 	}
 }
