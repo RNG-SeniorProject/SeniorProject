@@ -43,7 +43,7 @@ public class PredatorLogic : MonoBehaviour {
 			//stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
 			if (predatorController.IsChasing ()) {
-				animator.SetFloat ("Speed", 0.2f);
+				animator.SetFloat ("Speed", 1);
 				animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 			} else {
 				animator.SetFloat ("Speed", 0);

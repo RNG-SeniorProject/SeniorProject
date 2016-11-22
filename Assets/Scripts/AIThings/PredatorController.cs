@@ -12,10 +12,13 @@ public class PredatorController : MonoBehaviour {
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
+	public float idleRange = 5;
+	public float rangeMultiplier = 1;
 
 	void Start () {
 		player = GameObject.FindWithTag ("Player");
-		if (!player) Debug.Log ("Player not tagged");
+		if (!player)
+			Debug.Log ("Player not tagged");
 
 		GameObject[] predators = new GameObject[transform.parent.childCount];
 		for (int i = 0; i < predators.Length; i++) {
@@ -26,12 +29,13 @@ public class PredatorController : MonoBehaviour {
 				packLeaderController = predatorLeaderController;
 			}
 		}
-		if (!packLeader) Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
+		if (!packLeader)
+			Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
 
 		agent = GetComponent<NavMeshAgent> ();
 
 		targeted = false;
-		target = new Vector3 (this.transform.position.x, this.transform.position.y, this.transform.position.z);
+		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 	}
 
 	void Update () {
@@ -41,19 +45,22 @@ public class PredatorController : MonoBehaviour {
 		// if target is within the angle of vision and within chase range
 		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
 			packLeaderController.StartChasing();
-		} else if (targeted && targetDir.magnitude > chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
+		} else if (targeted && targetDir.magnitude > rangeMultiplier * chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
 			packLeaderController.StopChasing();
 		}
 
-		if (IsChasing ()) {
+		if (targeted) {
 			target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
-			agent.SetDestination (target);
 		} else {
-			if ((transform.position - target).magnitude < 5) {
-				target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
-				agent.SetDestination (target);
+			if (Random.value < 0.001) {
+				target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
+				if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
+					target = new Vector3 (packLeader.transform.position.x + Random.Range(-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range(-idleRange, idleRange));
+				}
 			}
 		}
+
+		agent.SetDestination (target);
 	}
 
 	public void StartChasing () {
@@ -66,7 +73,11 @@ public class PredatorController : MonoBehaviour {
 
 	public void StopChasing () {
 		targeted = false;
-		target = new Vector3 (packLeader.transform.position.x, packLeader.transform.position.y, packLeader.transform.position.z);
+		if (packLeader != null) {
+			target = new Vector3 (packLeader.transform.position.x + Random.Range (-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range (-idleRange, idleRange));
+		} else {
+			target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+		}
 		agent.SetDestination (target);
 	}
 

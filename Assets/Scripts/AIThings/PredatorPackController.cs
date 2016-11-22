@@ -17,13 +17,13 @@ public class PredatorPackController : MonoBehaviour {
 		}
 	}
 
-	public void StartChasing() {
+	public void StartChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {
 			predatorControllers[i].StartChasing ();
 		}
 	}
 
-	public void StopChasing() {
+	public void StopChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {
 			predatorControllers[i].StopChasing ();
 		}
