@@ -20,18 +20,21 @@ public class PreyController : MonoBehaviour {
 		if (!player)
 			Debug.Log ("Player not tagged");
 
-		GameObject[] prey = new GameObject[transform.parent.childCount];
-		for (int i = 0; i < prey.Length; i++) {
-			prey [i] = transform.parent.GetChild (i).gameObject;
-			PreyLeaderController preyLeaderController = prey [i].GetComponent ("PreyLeaderController") as PreyLeaderController;
-			if (preyLeaderController) {
-				herdLeader = preyLeaderController.gameObject;
-				herdLeaderController = preyLeaderController;
+		if (transform.parent != null) {
+			GameObject[] prey = new GameObject[transform.parent.childCount];
+			for (int i = 0; i < prey.Length; i++) {
+				prey [i] = transform.parent.GetChild (i).gameObject;
+				PreyLeaderController preyLeaderController = prey [i].GetComponent ("PreyLeaderController") as PreyLeaderController;
+				if (preyLeaderController) {
+					herdLeader = preyLeaderController.gameObject;
+					herdLeaderController = preyLeaderController;
+					break;
+				}
 			}
+			if (!herdLeader)
+				Debug.Log ("Herd Leader failed to instantiate [PreyController]");
 		}
-		if (!herdLeader)
-			Debug.Log ("Herd Leader failed to instantiate [PreyController]");
-
+		
 		agent = GetComponent<NavMeshAgent> ();
 
 		alarmed = false;
@@ -44,7 +47,11 @@ public class PreyController : MonoBehaviour {
 
 		// if target is within the angle of vision and within chase range
 		if (!alarmed && angle < visionAngle && targetDir.magnitude < chaseRange) {
-			herdLeaderController.StartFleeing ();
+			if (herdLeader != null) {
+				herdLeaderController.StartFleeing ();
+			} else {
+				StartFleeing ();
+			}
 		} else if (alarmed && targetDir.magnitude > rangeMultiplier * chaseRange) {
 			StopFleeing ();
 		}

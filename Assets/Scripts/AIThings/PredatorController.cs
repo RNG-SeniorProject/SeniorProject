@@ -17,20 +17,23 @@ public class PredatorController : MonoBehaviour {
 
 	void Start () {
 		player = GameObject.FindWithTag ("Player");
-		if (!player)
+		if (player == null)
 			Debug.Log ("Player not tagged");
 
-		GameObject[] predators = new GameObject[transform.parent.childCount];
-		for (int i = 0; i < predators.Length; i++) {
-			predators [i] = transform.parent.GetChild (i).gameObject;
-			PredatorLeaderController predatorLeaderController = predators [i].GetComponent ("PredatorLeaderController") as PredatorLeaderController;
-			if (predatorLeaderController) {
-				packLeader = predatorLeaderController.gameObject;
-				packLeaderController = predatorLeaderController;
+		if (transform.parent != null) {
+			GameObject[] predators = new GameObject[transform.parent.childCount];
+			for (int i = 0; i < predators.Length; i++) {
+				predators [i] = transform.parent.GetChild (i).gameObject;
+				PredatorLeaderController predatorLeaderController = predators [i].GetComponent ("PredatorLeaderController") as PredatorLeaderController;
+				if (predatorLeaderController) {
+					packLeader = predatorLeaderController.gameObject;
+					packLeaderController = predatorLeaderController;
+					break;
+				}
 			}
+			if (packLeader == null)
+				Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
 		}
-		if (!packLeader)
-			Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
 
 		agent = GetComponent<NavMeshAgent> ();
 
@@ -44,9 +47,17 @@ public class PredatorController : MonoBehaviour {
 
 		// if target is within the angle of vision and within chase range
 		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
-			packLeaderController.StartChasing();
+			if (packLeader != null) {
+				packLeaderController.StartChasing ();
+			} else {
+				StartChasing ();
+			}
 		} else if (targeted && targetDir.magnitude > rangeMultiplier * chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
-			packLeaderController.StopChasing();
+			if (packLeader != null) {
+				packLeaderController.StopChasing ();
+			} else {
+				StartChasing ();
+			}
 		}
 
 		if (targeted) {
