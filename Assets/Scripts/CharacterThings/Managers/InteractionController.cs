@@ -23,9 +23,7 @@ public class InteractionController : MonoBehaviour {
 
 		if (Input.GetKeyDown ("e")) {
 			GameObject temp = interactions [0];
-			temp.GetComponent<Interactable>().interact (gameObject, animator);
-			//interactions.RemoveAt (0);
-			//Destroy (interactions [0]);
+			temp.GetComponent<Interactable>().interact (gameObject);
 		}
 	}
 }

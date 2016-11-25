@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		Vector3 characterOffset = follow.position + new Vector3 (0f, distanceUpFollow, 0f);
+		Vector3 characterOffset = follow.position + new Vector3 (0f, 1.5f, 0f);
 
 		if (state == CamState.Follow) {
 			lookDir = characterOffset - this.transform.position;

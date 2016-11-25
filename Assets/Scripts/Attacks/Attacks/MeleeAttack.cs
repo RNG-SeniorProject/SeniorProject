@@ -46,7 +46,7 @@ public class MeleeAttack: Attack {
 			if (Vector3.Dot (chr.transform.forward.normalized, plrToEnemy.normalized) >= sweep) {
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
-				stats.takeDamage (-baseDamage, true);
+				stats.changeHealth (-baseDamage, true);
 			}
 
 			foreach (GameObject effect in effects) {

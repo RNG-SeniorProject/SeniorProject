@@ -10,9 +10,6 @@ public class CharacterStats : Destructible {
 	[SerializeField]
 	private float _energy;
 
-	private Image energyBar;
-	private Image energySlider;
-
 	public float Level{
 		get{ return _level;}
 		set{ _level = value;}
@@ -36,11 +33,6 @@ public class CharacterStats : Destructible {
 		base.Init ();
 
 		Energy = MaxEnergy;
-
-		if (transform.tag == "Player") {
-			energyBar = util.plrEnergyGui;
-			energySlider = energyBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
-		}
 	}
 
 	void Update(){
@@ -58,9 +50,7 @@ public class CharacterStats : Destructible {
 
 		Energy += value;
 
-		if (transform.tag == "Player") {
-			energySlider.fillAmount = Energy / MaxEnergy;
-		}
+		uiManager.changePlayerEnergy (this);
 
 		return true;
 	}

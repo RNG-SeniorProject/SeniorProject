@@ -3,15 +3,25 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class Util : MonoBehaviour{
-	public Camera cam;
-	public CameraController camController;
-	public CharacterLogic chrLogic;
-
 	public PlayerStats plr;
 
+	public Camera cam;
+
+	public CharacterLogic chrLogic;
+
+	public CameraController camController;
+	public InteractionController intController;
+
+	public DenController den;
+
+	public UIManager uiManager;
 	public Canvas canvas;
 	public Image plrHealthGui;
 	public Image plrEnergyGui;
 	public Image plrHungerGui;
+	public Image interactionUi;
+
 	public GameObject enemyHealthPrefab;
+
+	public Image denHungerGui;
 }

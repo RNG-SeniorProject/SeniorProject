@@ -30,7 +30,7 @@ public class ProjectileCollision : MonoBehaviour {
 		}*/
 
 		if (col.gameObject.GetComponent<Destructible>() != null && !col.transform.CompareTag("Player")) {
-			col.gameObject.GetComponent<CharacterStats> ().takeDamage (atkInfo.baseDamage, true);
+			col.gameObject.GetComponent<CharacterStats> ().changeHealth (atkInfo.baseDamage, true);
 
 			foreach (GameObject effect in atkInfo.effects) {
 				effect.GetComponent<Effect>().activateEffect (col.gameObject);

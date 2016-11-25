@@ -32,7 +32,7 @@ public abstract class Attack: MonoBehaviour {
 	}
 
 	public bool useEnergy(GameObject chr){
-		return chr.GetComponent<CharacterStats>().useEnergy (energyCost);
+		return chr.GetComponent<CharacterStats>().useEnergy (-energyCost);
 	}
 
 	public virtual bool performAttack (GameObject chr){

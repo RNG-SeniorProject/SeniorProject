@@ -22,6 +22,8 @@ public class CharacterLogic : MonoBehaviour {
 	private float mouseHor = 0.0f;
 	private float mouseVer = 0.0f;
 
+	private Vector3 plrMoveDirection;
+
 	private AnimatorStateInfo stateInfo;
 
 	private int m_LocomotionId = 0;
@@ -50,7 +52,7 @@ public class CharacterLogic : MonoBehaviour {
 			stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
 			animator.SetFloat ("Speed", speed);
-			animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+			//animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 
 			if (gamecam.state == CameraController.CamState.Aim) {
 				Quaternion deltaRotation = Quaternion.Euler (new Vector3(0, rotationDegreePerSecond * mouseHor, 0));
@@ -60,7 +62,10 @@ public class CharacterLogic : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		if (IsInLocomotion () && ((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
+		Quaternion plrInputDir = Quaternion.LookRotation (plrMoveDirection, Vector3.up);
+		transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .1f);
+
+		if (IsInLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
 				
 			Quaternion deltaRotation = Quaternion.Euler ((rotationAmount) * Time.deltaTime);
@@ -79,11 +84,14 @@ public class CharacterLogic : MonoBehaviour {
 		Quaternion refShift = Quaternion.FromToRotation (Vector3.forward, CamDirection);
 
 		Vector3 moveDirection = refShift * inputDirection;
+		plrMoveDirection = moveDirection;
 		Vector3 axisSign = Vector3.Cross (moveDirection, rootDirection);
 
 		float angleRootToMove = Vector3.Angle (rootDirection, moveDirection) * (axisSign.y >= 0 ? -1f : 1f);
 
 		angleRootToMove /= 180f;
+
+		Debug.DrawRay(transform.position + new Vector3(0,5,0), moveDirection, Color.blue);
 
 		directionOut = angleRootToMove * directionSpeed;
 	}
