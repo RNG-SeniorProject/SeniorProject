@@ -44,21 +44,21 @@ public class PredatorLogic : MonoBehaviour {
 
 			if (predatorController.IsChasing ()) {
 				animator.SetFloat ("Speed", 1);
-				animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+				// animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 			} else {
 				animator.SetFloat ("Speed", 0);
-				animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+				// animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 			}
 		}
 	}
 
-	void FixedUpdate(){
+	/*void FixedUpdate(){
 		if (IsInLocomotion () && ((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
 			Quaternion deltaRotation = Quaternion.Euler (rotationAmount * Time.deltaTime);
 			this.transform.rotation = (this.transform.rotation * deltaRotation);
 		}
-	}
+	}*/
 
 	public void stickToWorldspace(Transform root, Transform camera, ref float directionOut, ref float speedOut){
 		Vector3 rootDirection = root.forward;
