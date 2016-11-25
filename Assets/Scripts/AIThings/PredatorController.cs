@@ -1,8 +1,99 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyController : MonoBehaviour {
+public class PredatorController : MonoBehaviour {
 
+	private GameObject player;
+	private GameObject packLeader;
+	private PredatorLeaderController packLeaderController;
+	private NavMeshAgent agent;
+	private bool targeted;
+	private Vector3 target;
+
+	public float chaseRange = 10;
+	public float visionAngle = 60;
+	public float idleRange = 5;
+	public float rangeMultiplier = 1;
+
+	void Start () {
+		player = GameObject.FindWithTag ("Player");
+		if (player == null)
+			Debug.Log ("Player not tagged");
+
+		if (transform.parent != null) {
+			GameObject[] predators = new GameObject[transform.parent.childCount];
+			for (int i = 0; i < predators.Length; i++) {
+				predators [i] = transform.parent.GetChild (i).gameObject;
+				PredatorLeaderController predatorLeaderController = predators [i].GetComponent ("PredatorLeaderController") as PredatorLeaderController;
+				if (predatorLeaderController) {
+					packLeader = predatorLeaderController.gameObject;
+					packLeaderController = predatorLeaderController;
+					break;
+				}
+			}
+			if (packLeader == null)
+				Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
+		}
+
+		agent = GetComponent<NavMeshAgent> ();
+
+		targeted = false;
+		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+	}
+
+	void Update () {
+		Vector3 targetDir = player.transform.position - transform.position;
+		float angle = Vector3.Angle (targetDir, transform.forward);
+
+		// if target is within the angle of vision and within chase range
+		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
+			if (packLeader != null) {
+				packLeaderController.StartChasing ();
+			} else {
+				StartChasing ();
+			}
+		} else if (targeted && targetDir.magnitude > rangeMultiplier * chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
+			if (packLeader != null) {
+				packLeaderController.StopChasing ();
+			} else {
+				StartChasing ();
+			}
+		}
+
+		if (targeted) {
+			target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
+		} else {
+			if (Random.value < 0.001) {
+				target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
+				if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
+					target = new Vector3 (packLeader.transform.position.x + Random.Range(-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range(-idleRange, idleRange));
+				}
+			}
+		}
+
+		agent.SetDestination (target);
+	}
+
+	public void StartChasing () {
+		targeted = true;
+	}
+
+	public bool IsChasing () {
+		return targeted;
+	}
+
+	public void StopChasing () {
+		targeted = false;
+		if (packLeader != null) {
+			target = new Vector3 (packLeader.transform.position.x + Random.Range (-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range (-idleRange, idleRange));
+		} else {
+			target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+		}
+		agent.SetDestination (target);
+	}
+
+
+	/*
 	// private GameObject player;
 	private NavMeshAgent agent;
 	private bool targeted;
@@ -42,7 +133,7 @@ public class EnemyController : MonoBehaviour {
 
 	void Update() {
 		Vector3 targetDir = player.transform.position - transform.position;
-		float angle = Vector3.Angle(targetDir, transform.forward);
+		float angle = Vector3.Angle (targetDir, transform.forward);
 
 		// if target is within the angle of vision and within chase range
 		if (!targeted && angle < followAngle && targetDir.magnitude <= followDistance) {
@@ -55,7 +146,7 @@ public class EnemyController : MonoBehaviour {
 			this.target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
 			agent.SetDestination(target);
 		} else {
-			/*
+			
 			if (id == 0) {
 				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
 			} else {
@@ -76,8 +167,8 @@ public class EnemyController : MonoBehaviour {
 						this.target = new Vector3 (enemyLeader.transform.position.x + id * gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + id * gap);
 					}
 				}
-			}*/
-
+			}
+			/*
 			if (id == 0) {
 				this.target = new Vector3 (enemyLeader.transform.position.x, enemyLeader.transform.position.y, enemyLeader.transform.position.z);
 			} else if (id == 1) {
@@ -85,6 +176,7 @@ public class EnemyController : MonoBehaviour {
 			} else if (id == 2) {
 				this.target = new Vector3 (enemyLeader.transform.position.x - gap, enemyLeader.transform.position.y, enemyLeader.transform.position.z + gap);
 			}
+
 			agent.SetDestination (target);
 		}
 	}
@@ -102,4 +194,5 @@ public class EnemyController : MonoBehaviour {
 	public bool IsChasing() {
 		return targeted;
 	}
+	*/
 }
