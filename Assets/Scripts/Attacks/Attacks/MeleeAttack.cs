@@ -10,7 +10,12 @@ public class MeleeAttack: Attack {
 
 	protected List<GameObject> enemiesInRange;
 
-	private string tagToGet = "Enemy";
+	private string tagToIgnore;
+	private string myTag;
+
+	void Start(){
+		myTag = gameObject.transform.parent.parent.gameObject.tag;
+	}
 
 	public override bool performAttack(GameObject chr){
 		if (!base.performAttack (chr)) {
@@ -18,10 +23,6 @@ public class MeleeAttack: Attack {
 		}
 
 		enemiesInRange = new List<GameObject> ();
-
-		if (chr.CompareTag("Enemy")) {
-			tagToGet = "Player";
-		}
 
 		Collider[] enemies = Physics.OverlapSphere(chr.transform.position, reach);
 
@@ -33,7 +34,9 @@ public class MeleeAttack: Attack {
 
 		foreach (Collider hit in enemies) {
 			if (hit.gameObject.GetComponent<Destructible>() != null) {
-				enemiesInRange.Add (hit.gameObject);
+				if (hit.gameObject.tag != myTag && hit.gameObject.tag != tagToIgnore) {
+					enemiesInRange.Add (hit.gameObject);
+				}
 			}
 		}
 

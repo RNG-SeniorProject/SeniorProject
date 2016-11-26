@@ -11,6 +11,7 @@ public class PredatorAttackController : MonoBehaviour {
 	protected List<GameObject> activeAttacks;
 
 	private GameObject player;
+	private PredatorController predatorController;
 	// private CameraController cam;
 	private Animator animator;
 
@@ -18,14 +19,15 @@ public class PredatorAttackController : MonoBehaviour {
 		player = GameObject.FindWithTag ("Player");
 		if (player == null)
 			Debug.Log ("Player not tagged");
-		
+
+		predatorController = gameObject.GetComponent ("PredatorController") as PredatorController;
 		// cam = util.camController;
 
 		animator = gameObject.GetComponent<Animator> ();
 	}
 
 	void Update(){
-		if ((transform.position - player.transform.position).magnitude < 5) {
+		if (predatorController.IsChasing() && (transform.position - player.transform.position).magnitude < 5) {
 			if (activeAttacks.Count != 0) {
 				// if (cam.state == CameraController.CamState.Follow) {
 					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {

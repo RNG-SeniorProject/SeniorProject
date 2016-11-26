@@ -11,10 +11,12 @@ public class PredatorController : MonoBehaviour {
 	private bool targeted;
 	private bool idleWalking;
 	private Vector3 target;
+	private bool waitingToChase;
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
 	public float idleRange = 5;
+	public float chaseCooldown = 5;
 	public float rangeMultiplier = 1;
 
 	void Start () {
@@ -42,6 +44,7 @@ public class PredatorController : MonoBehaviour {
 
 		targeted = false;
 		idleWalking = false;
+		waitingToChase = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 	}
 
@@ -79,7 +82,7 @@ public class PredatorController : MonoBehaviour {
 			}
 		}
 	}
-
+		
 	private void StartIdleWalk () {
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
 		if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
@@ -98,7 +101,9 @@ public class PredatorController : MonoBehaviour {
 	}
 
 	public void StartChasing () {
-		targeted = true;
+		if (!waitingToChase) {
+			targeted = true;
+		}
 	}
 
 	public bool IsChasing () {
@@ -107,17 +112,15 @@ public class PredatorController : MonoBehaviour {
 
 	public void StopChasing () {
 		targeted = false;
-		if (packLeader != null) {
-			target = new Vector3 (packLeader.transform.position.x + Random.Range (-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range (-idleRange, idleRange));
-			agent.SetDestination (target);
-			animator.SetFloat ("Speed", 0.5f);
-		} else {
-			target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
-			agent.ResetPath ();
-			animator.SetFloat ("Speed", 0f);
-		}
+		StartIdleWalk ();
+		waitingToChase = true;
+		StartCoroutine ("ChaseCooldown", chaseCooldown);
 	}
 
+	IEnumerator ChaseCooldown(float cooldown){
+		yield return new WaitForSeconds (cooldown);
+		waitingToChase = false;
+	}
 
 	/*
 	// private GameObject player;

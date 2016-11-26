@@ -26,7 +26,6 @@ public class AttackController : MonoBehaviour {
 					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
 						animator.SetBool ("Swipe", true);
-
 						StartCoroutine (delayedWait("Swipe", 1));
 					}
 
@@ -44,7 +43,7 @@ public class AttackController : MonoBehaviour {
 	}
 
 	IEnumerator delayedWait(string anim, float time){
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (time);
 
 		animator.SetBool (anim, false);
 	}
