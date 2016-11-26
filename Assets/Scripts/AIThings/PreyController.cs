@@ -6,8 +6,10 @@ public class PreyController : MonoBehaviour {
 	private GameObject player;
 	private GameObject herdLeader;
 	private PreyLeaderController herdLeaderController;
+	private Animator animator;
 	private NavMeshAgent agent;
 	private bool alarmed;
+	private bool idleWalking;
 	private Vector3 target;
 
 	public float chaseRange = 10;
@@ -34,10 +36,12 @@ public class PreyController : MonoBehaviour {
 			if (!herdLeader)
 				Debug.Log ("Herd Leader failed to instantiate [PreyController]");
 		}
-		
+
+		animator = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 
 		alarmed = false;
+		idleWalking = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 	}
 
@@ -58,20 +62,40 @@ public class PreyController : MonoBehaviour {
 
 		if (alarmed) {
 			target = new Vector3 (transform.position.x - targetDir.x, transform.position.y - targetDir.y, transform.position.z - targetDir.z);
+			agent.SetDestination (target);
+			animator.SetFloat ("Speed", 1f);
 		} else {
 			if (Random.value < 0.001) {
-				target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
-				if (herdLeader != null && (herdLeader.transform.position - transform.position).magnitude > idleRange) {
-					target = new Vector3 (herdLeader.transform.position.x + Random.Range(-idleRange, idleRange), herdLeader.transform.position.y, herdLeader.transform.position.z + Random.Range(-idleRange, idleRange));
+				StartIdleWalk ();
+			}
+			if (idleWalking) {
+				if ((target - transform.position).magnitude < 2.5) {
+					StopIdleWalk ();
 				}
 			}
 		}
+	}
 
+	private void StartIdleWalk () {
+		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
+		if (herdLeader != null && (herdLeader.transform.position - transform.position).magnitude > idleRange) {
+			target = new Vector3 (herdLeader.transform.position.x + Random.Range(-idleRange, idleRange), herdLeader.transform.position.y, herdLeader.transform.position.z + Random.Range(-idleRange, idleRange));
+		}
 		agent.SetDestination (target);
+		animator.SetFloat ("Speed", 0.5f);
+		idleWalking = true;
+	}
+
+	private void StopIdleWalk () {
+		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+		agent.ResetPath ();
+		animator.SetFloat ("Speed", 0f);
+		idleWalking = false;
 	}
 
 	public void StartFleeing () {
 		alarmed = true;
+		idleWalking = false;
 	}
 
 	public bool IsFleeing () {
@@ -82,10 +106,13 @@ public class PreyController : MonoBehaviour {
 		alarmed = false;
 		if (herdLeader != null) {
 			target = new Vector3 (herdLeader.transform.position.x + Random.Range (-idleRange, idleRange), herdLeader.transform.position.y, herdLeader.transform.position.z + Random.Range (-idleRange, idleRange));
+			agent.SetDestination (target);
+			animator.SetFloat ("Speed", 0.5f);
 		} else {
 			target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+			animator.SetFloat ("Speed", 0f);
+			agent.ResetPath ();
 		}
-		agent.SetDestination (target);
 	}
 
 	/*
