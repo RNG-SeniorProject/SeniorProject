@@ -8,6 +8,7 @@ public class AllyPackController : MonoBehaviour {
 	public Vector3 idlePos;
 	private AllyController[] allyControllers;
 	public bool isMigrating;
+	public bool wait = false;
 
 	void Start () {
 		idlePos = util.den.currentDen.transform.position;
@@ -29,8 +30,10 @@ public class AllyPackController : MonoBehaviour {
 		if (isMigrating) {
 			if (!CheckMigration ()) {
 				idlePos = allyControllers [0].transform.position;
+				wait = true;
 			} else {
 				idlePos = util.den.currentDen.transform.position;
+				wait = false;
 			}
 		}
 	}
@@ -76,15 +79,10 @@ public class AllyPackController : MonoBehaviour {
 	}
 
 	public bool CheckMigration () {
-		GameObject[] predators = GameObject.FindGameObjectsWithTag ("Predator");
-
-		RaycastHit[] hits = Physics.SphereCastAll(idlePos, 15, util.den.currentDen.transform.position - allyControllers[0].transform.position, 30);
-		for (int i = 0; i < hits.Length; i++) {
-			for (int j = 0; j < predators.Length; j++) {
-				if (hits[i].transform.gameObject.GetInstanceID() == predators[j].GetInstanceID()) {
-					return false;
-				}
-			}
+		RaycastHit[] hits = Physics.SphereCastAll(allyControllers[0].transform.position, 15, util.den.currentDen.transform.position - allyControllers[0].transform.position, 30);
+		foreach (RaycastHit hit in hits){
+			if (hit.collider.gameObject.tag == "Enemy")
+				return false;
 		}
 
 		return true;

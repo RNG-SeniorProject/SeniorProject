@@ -33,7 +33,11 @@ public class AllyController : MonoBehaviour {
 
 	void Update () {
 		if (packCon.isMigrating) {
-			StartIdleWalk ();
+			if (packCon.wait) {
+				StopIdleWalk ();
+			} else {
+				StartIdleWalk ();
+			}
 		}
 
 		if (Random.value < 0.001) {
@@ -47,7 +51,6 @@ public class AllyController : MonoBehaviour {
 	}
 
 	private void StartIdleWalk () {
-		Debug.DrawRay(den.currentDen.transform.position, (idleRange) * den.currentDen.transform.right, Color.red, 0f, false);
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
 		if (((packCon.idlePos + ((idleRange) * den.currentDen.transform.right)) - transform.position).magnitude > idleRange) {
 			target = new Vector3 (packCon.idlePos.x + Random.Range (-idleRange, idleRange), packCon.idlePos.y, packCon.idlePos.z + Random.Range (-idleRange, idleRange)) + (idleRange) * den.currentDen.transform.right;
