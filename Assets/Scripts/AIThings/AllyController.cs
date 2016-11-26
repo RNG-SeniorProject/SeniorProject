@@ -11,7 +11,6 @@ public class AllyController : MonoBehaviour {
 
 	public float idleRange = 10;
 	public GameObject den;
-	public GameObject den2;
 
 	void Start () {
 		player = GameObject.FindWithTag ("Player");
@@ -24,8 +23,6 @@ public class AllyController : MonoBehaviour {
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 
 		idleWalking = false;
-
-		Migrate (den2);
 	}
 
 	void Update () {
