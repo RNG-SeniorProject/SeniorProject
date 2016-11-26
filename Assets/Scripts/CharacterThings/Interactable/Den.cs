@@ -54,10 +54,9 @@ public class Den : Interactable {
 	}
 
 	private void startTravel(GameObject chr){
-		//denController.migrate = true;
 		denController.currentDen.interactionString = "Migrate to this den.";
 		denController.currentDen = this;
-		//denController.startMigration ();
+		denController.startMigration ();
 		interactionString = "Feed pack.";
 		uiManager.updateInteractionText (interactionString);
 	}

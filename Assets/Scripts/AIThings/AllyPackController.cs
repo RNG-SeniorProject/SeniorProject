@@ -3,9 +3,15 @@ using System.Collections;
 
 public class AllyPackController : MonoBehaviour {
 
+	public Util util;
+
+	public Vector3 idlePos;
 	private AllyController[] allyControllers;
+	public bool isMigrating;
 
 	void Start () {
+		idlePos = util.den.currentDen.transform.position;
+
 		GameObject[] allies = new GameObject[transform.childCount];
 		for (int i = 0; i < allies.Length; i++) {
 			allies [i] = transform.GetChild (i).gameObject;
@@ -14,6 +20,18 @@ public class AllyPackController : MonoBehaviour {
 		allyControllers = new AllyController[allies.Length];
 		for (int i = 0; i < allies.Length; i++) {
 			allyControllers[i] = allies [i].GetComponent ("AllyController") as AllyController;
+		}
+
+		isMigrating = false;
+	}
+
+	void Update () {
+		if (isMigrating) {
+			if (!CheckMigration ()) {
+				idlePos = allyControllers [0].transform.position;
+			} else {
+				idlePos = util.den.currentDen.transform.position;
+			}
 		}
 	}
 
@@ -57,9 +75,23 @@ public class AllyPackController : MonoBehaviour {
 		allyControllers = newAllyControllers;
 	}
 
-	public void Migrate (GameObject newDen) {
-		for (int i = 0; i < allyControllers.Length; i++) {
-			allyControllers [i].Migrate (newDen);
+	public bool CheckMigration () {
+		GameObject[] predators = GameObject.FindGameObjectsWithTag ("Predator");
+
+		RaycastHit[] hits = Physics.SphereCastAll(idlePos, 15, util.den.currentDen.transform.position - allyControllers[0].transform.position, 30);
+		for (int i = 0; i < hits.Length; i++) {
+			for (int j = 0; j < predators.Length; j++) {
+				if (hits[i].transform.gameObject.GetInstanceID() == predators[j].GetInstanceID()) {
+					return false;
+				}
+			}
 		}
+
+		return true;
+	}
+
+	public void Migrate () {
+		isMigrating = true;
+		idlePos = util.den.currentDen.transform.position;
 	}
 }

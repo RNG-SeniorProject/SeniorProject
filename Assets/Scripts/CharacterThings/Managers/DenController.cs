@@ -52,5 +52,8 @@ public class DenController : MonoBehaviour {
 		uiManager.changeDenHunger ();
 	}
 
-	public void startMigration (){}
+	public void startMigration (){
+		migrate = true;
+		util.packCon.Migrate ();
+	}
 }

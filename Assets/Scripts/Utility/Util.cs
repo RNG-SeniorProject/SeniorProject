@@ -8,6 +8,7 @@ public class Util : MonoBehaviour{
 	public Camera cam;
 
 	public CharacterLogic chrLogic;
+	public AllyPackController packCon;
 
 	public CameraController camController;
 	public InteractionController intController;

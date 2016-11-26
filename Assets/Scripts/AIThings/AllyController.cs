@@ -2,6 +2,10 @@
 using System.Collections;
 
 public class AllyController : MonoBehaviour {
+	public Util util;
+
+	private AllyPackController packCon;
+	private DenController den;
 
 	private GameObject player;
 	private Animator animator;
@@ -10,12 +14,14 @@ public class AllyController : MonoBehaviour {
 	private bool idleWalking;
 
 	public float idleRange = 10;
-	public GameObject den;
 
 	void Start () {
 		player = GameObject.FindWithTag ("Player");
 		if (player == null)
 			Debug.Log ("Player not tagged");
+
+		packCon = util.packCon;
+		den = util.den;
 
 		animator = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
@@ -26,6 +32,10 @@ public class AllyController : MonoBehaviour {
 	}
 
 	void Update () {
+		if (packCon.isMigrating) {
+			StartIdleWalk ();
+		}
+
 		if (Random.value < 0.001) {
 			StartIdleWalk ();
 		}
@@ -37,9 +47,15 @@ public class AllyController : MonoBehaviour {
 	}
 
 	private void StartIdleWalk () {
+		Debug.DrawRay(den.currentDen.transform.position, (idleRange) * den.currentDen.transform.right, Color.red, 0f, false);
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
-		if ((den.transform.position - transform.position).magnitude > idleRange) {
-			target = new Vector3 (den.transform.position.x + Random.Range(-idleRange, idleRange), den.transform.position.y, den.transform.position.z + Random.Range(-idleRange, idleRange));
+		if (((packCon.idlePos + ((idleRange) * den.currentDen.transform.right)) - transform.position).magnitude > idleRange) {
+			target = new Vector3 (packCon.idlePos.x + Random.Range (-idleRange, idleRange), packCon.idlePos.y, packCon.idlePos.z + Random.Range (-idleRange, idleRange)) + (idleRange) * den.currentDen.transform.right;
+		} else {
+			if (packCon.idlePos == util.den.currentDen.transform.position) {
+				packCon.isMigrating = false;
+				util.den.migrate = false;
+			}
 		}
 		agent.SetDestination (target);
 		animator.SetFloat ("Speed", 0.5f);
@@ -53,26 +69,9 @@ public class AllyController : MonoBehaviour {
 		idleWalking = false;
 	}
 
-	public bool CheckMigration (GameObject newDen) {
-		GameObject[] predators = GameObject.FindGameObjectsWithTag ("Predator");
-
-		RaycastHit[] hits = Physics.SphereCastAll(den.transform.position, den.GetComponent<NavMeshObstacle>().size.magnitude / 2, newDen.transform.position - den.transform.position, (newDen.transform.position - den.transform.position).magnitude);
-		for (int i = 0; i < hits.Length; i++) {
-			for (int j = 0; j < predators.Length; j++) {
-				if (hits[i].transform.gameObject.GetInstanceID() == predators[j].GetInstanceID()) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	public void Migrate (GameObject newDen) {
-		den = newDen;
-		target = new Vector3 (den.transform.position.x + Random.Range(-idleRange, idleRange), den.transform.position.y, den.transform.position.z + Random.Range(-idleRange, idleRange));
+	public void Migrate () {
+		target = new Vector3 (packCon.idlePos.x + Random.Range(-idleRange, idleRange), packCon.idlePos.y, packCon.idlePos.z + Random.Range(-idleRange, idleRange));
 		agent.SetDestination (target);
 		animator.SetFloat ("Speed", 0.5f);
-		idleWalking = true;
 	}
 }
