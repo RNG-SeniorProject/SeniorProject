@@ -19,9 +19,9 @@ public class MeleeAttack: Attack {
 
 		enemiesInRange = new List<GameObject> ();
 
-		/*if (chr.CompareTag("Enemy")) {
+		if (chr.CompareTag("Enemy")) {
 			tagToGet = "Player";
-		}*/
+		}
 
 		Collider[] enemies = Physics.OverlapSphere(chr.transform.position, reach);
 

@@ -62,8 +62,10 @@ public class CharacterLogic : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
-		Quaternion plrInputDir = Quaternion.LookRotation (plrMoveDirection, Vector3.up);
-		transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .1f);
+		if (plrMoveDirection != Vector3.zero) {
+			Quaternion plrInputDir = Quaternion.LookRotation (plrMoveDirection, Vector3.up);
+			transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .1f);
+		}
 
 		if (IsInLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
