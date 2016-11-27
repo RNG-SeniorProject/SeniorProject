@@ -40,6 +40,8 @@ public class CharacterLogic : MonoBehaviour {
 	}
 
 	void Update () {
+		if (util.time.paused) {return;}
+
 		if (animator) {
 			stateInfo = animator.GetCurrentAnimatorStateInfo (0);
 
@@ -49,12 +51,19 @@ public class CharacterLogic : MonoBehaviour {
 			mouseHor = Mathf.Clamp(Input.GetAxis ("Mouse X"), -1f, 1f);
 			mouseVer = Input.GetAxis ("Mouse Y");
 
-			stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
+			if (gamecam.state == CameraController.CamState.Follow){
 
-			animator.SetFloat ("Speed", speed);
-			//animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+				stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
-			if (gamecam.state == CameraController.CamState.Aim) {
+				animator.SetFloat ("Speed", speed);
+				//animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
+			} else if (gamecam.state == CameraController.CamState.Aim) {
+				animator.SetFloat ("Speed", ver);
+				transform.position = transform.position + (transform.right * hor * Time.deltaTime * 5);
+
+				if (ver < 0) {
+					transform.position = transform.position + (transform.forward * ver * Time.deltaTime * 5);
+				}
 				Quaternion deltaRotation = Quaternion.Euler (new Vector3(0, rotationDegreePerSecond * mouseHor, 0));
 				this.transform.rotation = Quaternion.Slerp(this.transform.rotation, this.transform.rotation * deltaRotation, 2 * Time.deltaTime);
 			}
@@ -62,12 +71,14 @@ public class CharacterLogic : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+		if (util.time.paused) {return;}
+
 		if (plrMoveDirection != Vector3.zero) {
 			Quaternion plrInputDir = Quaternion.LookRotation (plrMoveDirection, Vector3.up);
 			transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .1f);
 		}
 
-		if (IsInLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
+		if (inLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
 				
 			Quaternion deltaRotation = Quaternion.Euler ((rotationAmount) * Time.deltaTime);
@@ -98,7 +109,7 @@ public class CharacterLogic : MonoBehaviour {
 		directionOut = angleRootToMove * directionSpeed;
 	}
 
-	public bool IsInLocomotion(){
+	public bool inLocomotion(){
 		return stateInfo.fullPathHash == m_LocomotionId;
 	}
 }

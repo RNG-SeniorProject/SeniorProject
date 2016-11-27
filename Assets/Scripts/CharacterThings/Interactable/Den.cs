@@ -5,7 +5,6 @@ public class Den : Interactable {
 	private DenController denController;
 
 	public float popCap;
-	public float lifeSupport;
 	public float foodSpawn;
 
 	public float MaxHunger;
@@ -25,17 +24,13 @@ public class Den : Interactable {
 		}
 	}
 
-	/*void OnTriggerEnter(Collider hit){
-		if (hit.GetComponent<InteractionController> () != null) {
-			triggerEnter (hit);
-		}
-	}
-
-	void OnTriggerExit(Collider hit){
-	}*/
-
 	public override void interact (GameObject chr){
-		if (denController.migrate) {return;}
+		denController = util.den;
+
+		if (denController.migrate) {
+			uiManager.displayWarning ("You can't while migrating.");
+			return;
+		}
 
 		if (this == denController.currentDen) {
 			feedFamily (chr);
@@ -54,6 +49,7 @@ public class Den : Interactable {
 	}
 
 	private void startTravel(GameObject chr){
+		uiManager = util.uiManager;
 		denController.currentDen.interactionString = "Migrate to this den.";
 		denController.currentDen = this;
 		denController.startMigration ();

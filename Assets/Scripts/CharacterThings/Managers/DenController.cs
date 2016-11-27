@@ -8,7 +8,7 @@ public class DenController : MonoBehaviour {
 
 	public Den currentDen;
 
-	public float population;
+	public int population;
 
 	public GameObject[] individuals;
 
@@ -28,21 +28,19 @@ public class DenController : MonoBehaviour {
 	}
 
 	void Update(){
+		if (util.time.paused) {return;}
+
 		//Change hunger
 		if (migrate){ return;}
 
 		changeHunger(HungerModBase * population * Time.deltaTime);
 
-		if (population > currentDen.lifeSupport) {
+		if (population > currentDen.popCap) {
 			panicDying = true;
+			uiManager.revealStarveWarning ();
 		} else {
 			panicDying = false;
-		}
-
-		if (Hunger <= currentDen.MaxHunger * .15) {
-			panicLowFood = true;
-		} else {
-			panicLowFood = false;
+			uiManager.hideStarveWarning ();
 		}
 	}
 
@@ -55,5 +53,6 @@ public class DenController : MonoBehaviour {
 	public void startMigration (){
 		migrate = true;
 		util.packCon.Migrate ();
+		uiManager.revealMigrateWarning ();
 	}
 }

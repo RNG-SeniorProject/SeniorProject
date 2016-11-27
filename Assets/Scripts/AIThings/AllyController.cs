@@ -58,6 +58,7 @@ public class AllyController : MonoBehaviour {
 			if (packCon.idlePos == util.den.currentDen.transform.position) {
 				packCon.isMigrating = false;
 				util.den.migrate = false;
+				util.uiManager.hideMigrateWarning ();
 			}
 		}
 		agent.SetDestination (target);

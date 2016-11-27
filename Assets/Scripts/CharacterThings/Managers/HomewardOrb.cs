@@ -19,6 +19,7 @@ public class HomewardOrb : MonoBehaviour {
 	}
 
 	void Update () {
+		if (util.time.paused) {return;}
 
 		if (Input.GetKeyDown("q")) {
 			if (visible) {

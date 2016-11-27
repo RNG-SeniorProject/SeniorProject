@@ -53,6 +53,8 @@ public class PlayerStats : CharacterStats {
 	}
 
 	void Update(){
+		if (util.time.paused) {return;}
+
 		update ();
 	}
 
