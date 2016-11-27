@@ -9,6 +9,10 @@ public class PredatorLeaderController : MonoBehaviour {
 		predatorPackController = transform.parent.GetComponent ("PredatorPackController") as PredatorPackController;
 	}
 
+	public GameObject GetDen () {
+		return predatorPackController.GetDen ();
+	}
+
 	public void StartChasing () {
 		predatorPackController.StartChasing ();
 	}
