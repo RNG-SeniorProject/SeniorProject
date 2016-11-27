@@ -9,6 +9,7 @@ public class PreyController : MonoBehaviour {
 	private Animator animator;
 	private NavMeshAgent agent;
 	private bool alarmed;
+	private bool disturbed;
 	private bool idleWalking;
 	private Vector3 target;
 
@@ -41,6 +42,7 @@ public class PreyController : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent> ();
 
 		alarmed = false;
+		disturbed = false;
 		idleWalking = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 	}
@@ -65,8 +67,15 @@ public class PreyController : MonoBehaviour {
 			agent.SetDestination (target);
 			animator.SetFloat ("Speed", 1f);
 		} else {
-			if (Random.value < 0.001) {
+			if (!disturbed && Random.value < 0.001) {
 				StartIdleWalk ();
+			}
+			if (disturbed) {
+				if ((target - transform.position).magnitude < 2.5) {
+					disturbed = false;
+					agent.ResetPath ();
+					animator.SetFloat ("Speed", 0.0f);
+				}
 			}
 			if (idleWalking) {
 				if ((target - transform.position).magnitude < 2.5) {
@@ -74,6 +83,13 @@ public class PreyController : MonoBehaviour {
 				}
 			}
 		}
+	}
+
+	public void OnHit () {
+		disturbed = true;
+		target = new Vector3 (transform.position.x - player.transform.position.x, transform.position.y - player.transform.position.y, transform.position.z - player.transform.position.z);
+		agent.SetDestination (target);
+		animator.SetFloat ("Speed", 1.0f);
 	}
 
 	private void StartIdleWalk () {
