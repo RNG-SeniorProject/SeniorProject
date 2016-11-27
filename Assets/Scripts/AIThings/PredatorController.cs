@@ -5,6 +5,7 @@ public class PredatorController : MonoBehaviour {
 
 	private GameObject player;
 	private GameObject packLeader;
+	private GameObject den;
 	private PredatorLeaderController packLeaderController;
 	private Animator animator;
 	private NavMeshAgent agent;
@@ -37,6 +38,12 @@ public class PredatorController : MonoBehaviour {
 			}
 			if (packLeader == null)
 				Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
+		}
+
+		if (packLeader != null) {
+			den = packLeaderController.GetDen ();
+		} else {
+			den = transform.parent.gameObject;
 		}
 
 		animator = GetComponent<Animator> ();
