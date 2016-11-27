@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class PredatorAttackController : MonoBehaviour {
+public class AllyAttackController : MonoBehaviour {
 	// public Util util;
 
 	[SerializeField]
@@ -10,7 +10,8 @@ public class PredatorAttackController : MonoBehaviour {
 	[SerializeField]
 	protected List<GameObject> activeAttacks;
 
-	private PredatorController predatorController;
+	private GameObject player;
+	private AllyController allyController;
 	// private CameraController cam;
 	private Animator animator;
 
@@ -18,26 +19,31 @@ public class PredatorAttackController : MonoBehaviour {
 	private bool enemyInRange;
 
 	void Start(){
-		predatorController = gameObject.GetComponent ("PredatorController") as PredatorController;
+		player = GameObject.FindWithTag ("Player");
+		if (player == null)
+			Debug.Log ("Player not tagged");
+
+		allyController = gameObject.GetComponent ("AllyController") as AllyController;
 		// cam = util.camController;
 
 		animator = gameObject.GetComponent<Animator> ();
 
-		target = GameObject.FindWithTag ("Player");
+		enemyInRange = false;
+		target = null;
 	}
 
 	void Update(){
-		if (predatorController.IsChasing() && (transform.position - target.transform.position).magnitude < 5) {
+		if (enemyInRange && (transform.position - target.transform.position).magnitude < 5) {
 			if (activeAttacks.Count != 0) {
 				// if (cam.state == CameraController.CamState.Follow) {
-					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
-						Quaternion turnDirection = Quaternion.LookRotation (target.transform.position - transform.position, Vector3.up);
-						transform.rotation = Quaternion.Slerp (transform.rotation, turnDirection, .5f);
+				if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
+					Quaternion turnDirection = Quaternion.LookRotation (target.transform.position - transform.position, Vector3.up);
+					transform.rotation = Quaternion.Slerp (transform.rotation, turnDirection, .5f);
 
-						animator.SetBool ("Swipe", true);
+					animator.SetBool ("Swipe", true);
 
-						StartCoroutine (delayedWait("Swipe", 1));
-					}
+					StartCoroutine (delayedWait("Swipe", 1));
+				}
 
 				// }
 				/*else {
@@ -53,19 +59,19 @@ public class PredatorAttackController : MonoBehaviour {
 		}
 	}
 
-	public void SetTarget (GameObject enemy) {
-		target = enemy;
-		enemyInRange = true;
-	}
-
-	public void RemoveTarget() {
-		target = null;
-		enemyInRange = false;
-	}
-
 	IEnumerator delayedWait(string anim, float time){
 		yield return new WaitForSeconds (1);
 
 		animator.SetBool (anim, false);
+	}
+
+	public void SetTarget (GameObject enemy) {
+		target = enemy;
+		enemyInRange = true;
+	}
+		
+	public void RemoveTarget() {
+		target = null;
+		enemyInRange = false;
 	}
 }

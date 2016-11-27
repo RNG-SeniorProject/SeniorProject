@@ -6,6 +6,7 @@ public class PredatorController : MonoBehaviour {
 	private GameObject player;
 	private GameObject packLeader;
 	private GameObject den;
+	private PredatorAttackController attackCon;
 	private PredatorLeaderController packLeaderController;
 	private Animator animator;
 	private NavMeshAgent agent;
@@ -13,11 +14,14 @@ public class PredatorController : MonoBehaviour {
 	private bool disturbed;
 	private bool idleWalking;
 	private Vector3 target;
+	private GameObject enemy;
+	private Vector3 enemyPos;
+	private bool waitingToBreak;
 	private bool waitingToChase;
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
-	public float idleRange = 5;
+	public float idleRange = 10;
 	public float chaseCooldown = 5;
 	public float rangeMultiplier = 1;
 
@@ -42,33 +46,44 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		if (packLeader != null) {
-			den = packLeaderController.GetDen ();
+			den = transform.parent.parent.gameObject;
 		} else {
 			den = transform.parent.gameObject;
 		}
-
+		attackCon = gameObject.GetComponent ("PredatorAttackController") as PredatorAttackController;
 		animator = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 
 		targeted = false;
 		disturbed = false;
 		idleWalking = false;
+		waitingToBreak = false;
 		waitingToChase = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+
+		enemy = player;
+		enemyPos = player.transform.position;
 	}
 
 	void Update () {
-		Vector3 targetDir = player.transform.position - transform.position;
-		float angle = Vector3.Angle (targetDir, transform.forward);
+		Collider[] enemies = Physics.OverlapSphere (transform.position, chaseRange);
+		foreach (Collider hit in enemies) {
+			if (hit.gameObject.GetComponent<Destructible> () != null) {
+				if (hit.gameObject.tag != "Enemy") {
+					enemy = hit.gameObject;
+					enemyPos = hit.gameObject.transform.position;
+				}
+			}
+		}
 
 		// if target is within the angle of vision and within chase range
-		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
+		if (!targeted && (enemyPos - transform.position).magnitude < chaseRange) {
 			if (packLeader != null) {
 				packLeaderController.StartChasing ();
 			} else {
 				StartChasing ();
 			}
-		} else if (targeted && targetDir.magnitude > rangeMultiplier * chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
+		} else if (targeted && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange) && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
 			if (packLeader != null) {
 				packLeaderController.StopChasing ();
 			} else {
@@ -77,9 +92,14 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		if (targeted) {
-			target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
-			agent.SetDestination (target);
-			animator.SetFloat ("Speed", 1f);
+			if ((den.transform.position - transform.position).magnitude < 100) {
+				attackCon.SetTarget (enemy);
+				target = new Vector3 (enemyPos.x, enemyPos.y, enemyPos.z);
+				agent.SetDestination (target);
+				animator.SetFloat ("Speed", 1f);
+			} else {
+				packLeaderController.StopChasing ();
+			}
 		} else {
 			if (!disturbed && Random.value < 0.001) {
 				StartIdleWalk ();
@@ -101,8 +121,8 @@ public class PredatorController : MonoBehaviour {
 		
 	private void StartIdleWalk () {
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
-		if (den != null && ((den.transform.position + idleRange * den.transform.right) - transform.position).magnitude > idleRange) {
-			target = new Vector3 (den.transform.position.x + Random.Range(-idleRange, idleRange), den.transform.position.y, den.transform.position.z + Random.Range(-idleRange, idleRange)) + idleRange * den.transform.right;
+		if (den != null && ((den.transform.position + 2 * idleRange * den.transform.right) - transform.position).magnitude > idleRange) {
+			target = new Vector3 (den.transform.position.x + Random.Range(-idleRange, idleRange), den.transform.position.y, den.transform.position.z + Random.Range(-idleRange, idleRange)) + 2 * idleRange * den.transform.right;
 		} else if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
 			target = new Vector3 (packLeader.transform.position.x + Random.Range(-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range(-idleRange, idleRange));
 		}
@@ -117,9 +137,9 @@ public class PredatorController : MonoBehaviour {
 		idleWalking = false;
 	}
 
-	public void OnHit () {
+	public void OnHit (GameObject attacker) {
 		disturbed = true;
-		target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
+		target = new Vector3 (attacker.transform.position.x, attacker.transform.position.y, attacker.transform.position.z);
 		agent.SetDestination (target);
 		animator.SetFloat ("Speed", 1.0f);
 	}
@@ -127,6 +147,8 @@ public class PredatorController : MonoBehaviour {
 	public void StartChasing () {
 		if (!waitingToChase) {
 			targeted = true;
+			waitingToBreak = true;
+			StartCoroutine ("ChaseWarmup", chaseCooldown);
 		}
 	}
 
@@ -135,10 +157,17 @@ public class PredatorController : MonoBehaviour {
 	}
 
 	public void StopChasing () {
-		targeted = false;
-		StartIdleWalk ();
-		waitingToChase = true;
-		StartCoroutine ("ChaseCooldown", chaseCooldown);
+		if (!waitingToBreak) {
+			targeted = false;
+			StartIdleWalk ();
+			waitingToChase = true;
+			StartCoroutine ("ChaseCooldown", chaseCooldown);
+		}
+	}
+
+	IEnumerator ChaseWarmup(float cooldown){
+		yield return new WaitForSeconds (cooldown);
+		waitingToBreak = false;
 	}
 
 	IEnumerator ChaseCooldown(float cooldown){

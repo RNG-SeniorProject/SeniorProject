@@ -104,8 +104,6 @@ public class CharacterLogic : MonoBehaviour {
 
 		angleRootToMove /= 180f;
 
-		Debug.DrawRay(transform.position + new Vector3(0,5,0), moveDirection, Color.blue);
-
 		directionOut = angleRootToMove * directionSpeed;
 	}
 

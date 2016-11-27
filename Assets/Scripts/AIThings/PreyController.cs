@@ -12,6 +12,7 @@ public class PreyController : MonoBehaviour {
 	private bool disturbed;
 	private bool idleWalking;
 	private Vector3 target;
+	private Vector3 enemyPos;
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
@@ -45,25 +46,31 @@ public class PreyController : MonoBehaviour {
 		disturbed = false;
 		idleWalking = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+		enemyPos = player.transform.position;
 	}
 
 	void Update () {
-		Vector3 targetDir = player.transform.position - transform.position;
-		float angle = Vector3.Angle (targetDir, transform.forward);
+		Collider[] enemies = Physics.OverlapSphere (transform.position, chaseRange);
+		foreach (Collider hit in enemies) {
+			if (hit.gameObject.GetComponent<Destructible> () != null) {
+				if (hit.gameObject.tag != "Prey") {
+					enemyPos = hit.gameObject.transform.position;
+				}
+			}
+		}
 
-		// if target is within the angle of vision and within chase range
-		if (!alarmed && angle < visionAngle && targetDir.magnitude < chaseRange) {
+		if (!alarmed && (enemyPos - transform.position).magnitude < chaseRange) {
 			if (herdLeader != null) {
 				herdLeaderController.StartFleeing ();
 			} else {
 				StartFleeing ();
 			}
-		} else if (alarmed && targetDir.magnitude > rangeMultiplier * chaseRange) {
+		} else if (alarmed && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange)) {
 			StopFleeing ();
 		}
 
 		if (alarmed) {
-			target = new Vector3 (transform.position.x - targetDir.x, transform.position.y - targetDir.y, transform.position.z - targetDir.z);
+			target = 2 * transform.position - enemyPos;
 			agent.SetDestination (target);
 			animator.SetFloat ("Speed", 1f);
 		} else {
@@ -85,9 +92,9 @@ public class PreyController : MonoBehaviour {
 		}
 	}
 
-	public void OnHit () {
+	public void OnHit (GameObject attacker) {
 		disturbed = true;
-		target = new Vector3 (transform.position.x - player.transform.position.x, transform.position.y - player.transform.position.y, transform.position.z - player.transform.position.z);
+		target = new Vector3 (2 * transform.position.x - attacker.transform.position.x, 2 * transform.position.y - attacker.transform.position.y, 2 * transform.position.z - attacker.transform.position.z);
 		agent.SetDestination (target);
 		animator.SetFloat ("Speed", 1.0f);
 	}

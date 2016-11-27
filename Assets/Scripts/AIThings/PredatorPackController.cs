@@ -7,6 +7,8 @@ public class PredatorPackController : MonoBehaviour {
 	private GameObject den;
 
 	void Start () {
+		den = transform.parent.gameObject;
+
 		GameObject[] predators = new GameObject[transform.childCount];
 		for (int i = 0; i < predators.Length; i++) {
 			predators [i] = transform.GetChild (i).gameObject;
@@ -16,13 +18,11 @@ public class PredatorPackController : MonoBehaviour {
 		for (int i = 0; i < predators.Length; i++) {
 			predatorControllers[i] = predators [i].GetComponent ("PredatorController") as PredatorController;
 		}
-
-		den = transform.parent.gameObject;
 	}
 
-	public GameObject GetDen () {
+	/* public GameObject GetDen () {
 		return den;
-	}
+	} */
 
 	public void StartChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {
