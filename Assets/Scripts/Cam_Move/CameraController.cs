@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
-	public Util util;
 
 	[SerializeField]
 	private float distanceAwayFollow;
@@ -45,11 +44,9 @@ public class CameraController : MonoBehaviour {
 		//lookDir = followXForm.forward;
 
 		state = CamState.Follow;
-	} 
+	}
 
 	void Update () {
-		if (util.time.paused) {return;}
-
 		if (Input.GetMouseButtonDown (1)) {
 			if (state == CamState.Follow) {
 				state = CamState.Aim;
@@ -62,8 +59,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 	void LateUpdate(){
-		if (util.time.paused) {return;}
-
 		Vector3 characterOffset = follow.position + new Vector3 (0f, 1.5f, 0f);
 
 		if (state == CamState.Follow) {

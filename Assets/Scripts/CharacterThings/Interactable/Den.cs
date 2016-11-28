@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Den : Interactable {
 	private DenController denController;
 
 	public float popCap;
+	public float lifeSupport;
 	public float foodSpawn;
-
-	public List<GameObject> herds;
-
-	public float spawnTime = 1000;
 
 	public float MaxHunger;
 
@@ -27,33 +23,19 @@ public class Den : Interactable {
 		if (denController.currentDen == this){
 			interactionString = "Feed pack.";
 		}
-
-		spawnTime = 1000;
 	}
 
-	void Update(){
-		if (util.den.currentDen != this) {
-			spawnTime += Time.deltaTime;
-
-			if (spawnTime > 60) {
-				util.preySpawn.spawnNearPlayerDen (this);
-			}
-		}
-
-		foreach (GameObject herd in herds) {
-			if (herd.transform.childCount == 0) {
-				removeHerd (herd);
-			}
+	/*void OnTriggerEnter(Collider hit){
+		if (hit.GetComponent<InteractionController> () != null) {
+			triggerEnter (hit);
 		}
 	}
+
+	void OnTriggerExit(Collider hit){
+	}*/
 
 	public override void interact (GameObject chr){
-		denController = util.den;
-
-		if (denController.migrate) {
-			uiManager.displayWarning ("You can't while migrating.");
-			return;
-		}
+		if (denController.migrate) {return;}
 
 		if (this == denController.currentDen) {
 			feedFamily (chr);
@@ -72,21 +54,10 @@ public class Den : Interactable {
 	}
 
 	private void startTravel(GameObject chr){
-		uiManager = util.uiManager;
 		denController.currentDen.interactionString = "Migrate to this den.";
 		denController.currentDen = this;
 		denController.startMigration ();
 		interactionString = "Feed pack.";
 		uiManager.updateInteractionText (interactionString);
-	}
-
-	public void addHerd(GameObject herd){
-		herds.Add (herd);
-		spawnTime = 0;
-
-	}
-
-	public void removeHerd(GameObject herd){
-		herds.Remove (herd);
 	}
 }

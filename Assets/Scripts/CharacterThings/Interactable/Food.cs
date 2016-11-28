@@ -6,8 +6,6 @@ public abstract class Food : Interactable {
 	public float use;
 	public float hunger;
 
-	public float timeAlive = 0;
-
 	void Start(){
 		Init ();
 	}
@@ -16,14 +14,6 @@ public abstract class Food : Interactable {
 		base.Init ();
 
 		interactionString = "Eat.";
-	}
-
-	void Update(){
-		timeAlive += Time.deltaTime;
-
-		if (timeAlive > 120) {
-			Destroy (this);
-		}
 	}
 
 	protected abstract void eat (GameObject chr);

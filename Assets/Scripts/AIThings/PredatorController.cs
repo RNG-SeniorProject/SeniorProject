@@ -5,28 +5,21 @@ public class PredatorController : MonoBehaviour {
 
 	private GameObject player;
 	private GameObject packLeader;
-	private GameObject den;
-	private PredatorAttackController attackCon;
 	private PredatorLeaderController packLeaderController;
 	private Animator animator;
 	private NavMeshAgent agent;
 	private bool targeted;
-	private bool disturbed;
 	private bool idleWalking;
 	private Vector3 target;
-	private GameObject enemy;
-	private Vector3 enemyPos;
-	private bool waitingToBreak;
 	private bool waitingToChase;
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
-	public float idleRange = 10;
+	public float idleRange = 5;
 	public float chaseCooldown = 5;
 	public float rangeMultiplier = 1;
 
 	void Start () {
-
 		player = GameObject.FindWithTag ("Player");
 		if (player == null)
 			Debug.Log ("Player not tagged");
@@ -46,49 +39,27 @@ public class PredatorController : MonoBehaviour {
 				Debug.Log ("Pack Leader failed to instantiate [PredatorController]");
 		}
 
-		if (packLeader != null) {
-			if (transform.parent.parent != null) {
-				den = transform.parent.parent.gameObject;
-			}
-		} else {
-			if (transform.parent != null) {
-				den = transform.parent.gameObject;
-			}
-		}
-		attackCon = gameObject.GetComponent ("PredatorAttackController") as PredatorAttackController;
 		animator = GetComponent<Animator> ();
 		agent = GetComponent<NavMeshAgent> ();
 
 		targeted = false;
-		disturbed = false;
 		idleWalking = false;
-		waitingToBreak = false;
 		waitingToChase = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
-
-		enemy = player;
-		enemyPos = player.transform.position;
 	}
 
 	void Update () {
-		Collider[] enemies = Physics.OverlapSphere (transform.position, chaseRange);
-		foreach (Collider hit in enemies) {
-			if (hit.gameObject.GetComponent<Destructible> () != null) {
-				if (hit.gameObject.tag != "Enemy") {
-					enemy = hit.gameObject;
-					enemyPos = hit.gameObject.transform.position;
-				}
-			}
-		}
+		Vector3 targetDir = player.transform.position - transform.position;
+		float angle = Vector3.Angle (targetDir, transform.forward);
 
 		// if target is within the angle of vision and within chase range
-		if (!targeted && (enemyPos - transform.position).magnitude < chaseRange) {
+		if (!targeted && angle < visionAngle && targetDir.magnitude < chaseRange) {
 			if (packLeader != null) {
 				packLeaderController.StartChasing ();
 			} else {
 				StartChasing ();
 			}
-		} else if (targeted && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange) && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
+		} else if (targeted && targetDir.magnitude > rangeMultiplier * chaseRange && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
 			if (packLeader != null) {
 				packLeaderController.StopChasing ();
 			} else {
@@ -97,24 +68,12 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		if (targeted) {
-			if ((den.transform.position - transform.position).magnitude < 100) {
-				attackCon.SetTarget (enemy);
-				target = new Vector3 (enemyPos.x, enemyPos.y, enemyPos.z);
-				agent.SetDestination (target);
-				animator.SetFloat ("Speed", 1f);
-			} else {
-				packLeaderController.StopChasing ();
-			}
+			target = new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z);
+			agent.SetDestination (target);
+			animator.SetFloat ("Speed", 1f);
 		} else {
-			if (!disturbed && Random.value < 0.001) {
+			if (Random.value < 0.001) {
 				StartIdleWalk ();
-			}
-			if (disturbed) {
-				if ((target - transform.position).magnitude < 2.5) {
-					disturbed = false;
-					agent.ResetPath ();
-					animator.SetFloat ("Speed", 0.0f);
-				}
 			}
 			if (idleWalking) {
 				if ((target - transform.position).magnitude < 2.5) {
@@ -126,9 +85,7 @@ public class PredatorController : MonoBehaviour {
 		
 	private void StartIdleWalk () {
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
-		if (den != null && ((den.transform.position + 2 * idleRange * den.transform.right) - transform.position).magnitude > idleRange) {
-			target = new Vector3 (den.transform.position.x + Random.Range(-idleRange, idleRange), den.transform.position.y, den.transform.position.z + Random.Range(-idleRange, idleRange)) + 2 * idleRange * den.transform.right;
-		} else if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
+		if (packLeader != null && (packLeader.transform.position - transform.position).magnitude > idleRange) {
 			target = new Vector3 (packLeader.transform.position.x + Random.Range(-idleRange, idleRange), packLeader.transform.position.y, packLeader.transform.position.z + Random.Range(-idleRange, idleRange));
 		}
 		agent.SetDestination (target);
@@ -137,23 +94,15 @@ public class PredatorController : MonoBehaviour {
 	}
 
 	private void StopIdleWalk () {
+		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 		agent.ResetPath ();
 		animator.SetFloat ("Speed", 0f);
 		idleWalking = false;
 	}
 
-	public void OnHit (GameObject attacker) {
-		disturbed = true;
-		target = new Vector3 (attacker.transform.position.x, attacker.transform.position.y, attacker.transform.position.z);
-		agent.SetDestination (target);
-		animator.SetFloat ("Speed", 1.0f);
-	}
-
 	public void StartChasing () {
 		if (!waitingToChase) {
 			targeted = true;
-			waitingToBreak = true;
-			StartCoroutine ("ChaseWarmup", chaseCooldown);
 		}
 	}
 
@@ -162,17 +111,10 @@ public class PredatorController : MonoBehaviour {
 	}
 
 	public void StopChasing () {
-		if (!waitingToBreak) {
-			targeted = false;
-			StartIdleWalk ();
-			waitingToChase = true;
-			StartCoroutine ("ChaseCooldown", chaseCooldown);
-		}
-	}
-
-	IEnumerator ChaseWarmup(float cooldown){
-		yield return new WaitForSeconds (cooldown);
-		waitingToBreak = false;
+		targeted = false;
+		StartIdleWalk ();
+		waitingToChase = true;
+		StartCoroutine ("ChaseCooldown", chaseCooldown);
 	}
 
 	IEnumerator ChaseCooldown(float cooldown){

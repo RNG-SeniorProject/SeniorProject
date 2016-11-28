@@ -8,7 +8,7 @@ public class InteractionController : MonoBehaviour {
 	private CameraController cam;
 	private Animator animator;
 
-	public List<Interactable> interactions;
+	public List<GameObject> interactions;
 
 	void Start () {
 		cam = util.camController;
@@ -17,15 +17,13 @@ public class InteractionController : MonoBehaviour {
 	}
 
 	void Update () {
-		if (util.time.paused) {return;}
-
 		if (interactions.Count <= 0) {
 			return;
 		}
 
 		if (Input.GetKeyDown ("e")) {
-			Interactable temp = interactions [0];
-			temp.interact (gameObject);
+			GameObject temp = interactions [0];
+			temp.GetComponent<Interactable>().interact (gameObject);
 		}
 	}
 }

@@ -10,7 +10,7 @@ public class MeleeAttack: Attack {
 
 	protected List<GameObject> enemiesInRange;
 
-	public string tagToIgnore;
+	private string tagToIgnore;
 	private string myTag;
 
 	void Start(){
@@ -50,17 +50,6 @@ public class MeleeAttack: Attack {
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
 				stats.changeHealth (-baseDamage, true);
-
-				PredatorController pred = enemy.GetComponent<PredatorController> ();
-				PreyController prey = enemy.GetComponent<PreyController> ();
-
-				if (pred != null) {
-					pred.OnHit (enemy);
-				}
-
-				if (prey != null) {
-					prey.OnHit (enemy);
-				}
 			}
 
 			foreach (GameObject effect in effects) {
