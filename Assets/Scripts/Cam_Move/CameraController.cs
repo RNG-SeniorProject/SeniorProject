@@ -50,15 +50,15 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		if (util.time.paused) {return;}
 
-		/*if (Input.GetMouseButtonDown (1)) {
+		if (Input.GetMouseButtonDown (1)) {
 			if (state == CamState.Follow) {
-				state = CamState.Aim;
+				//state = CamState.Aim;
 				//Cursor.lockState = CursorLockMode.Locked;
-				Cursor.visible = true;
+				//Cursor.visible = true;
 			} else if (state == CamState.Aim) {
 				state = CamState.Follow;
 			}
-		}*/
+		}
 	}
 
 	void LateUpdate(){
@@ -71,7 +71,7 @@ public class CameraController : MonoBehaviour {
 			lookDir.y = 0;
 			lookDir.Normalize ();
 
-			targetPosition = characterOffset + Vector3.up * distanceUpFollow - lookDir * distanceAwayFollow;
+			targetPosition = characterOffset + Vector3.up * (distanceUpFollow) - lookDir * distanceAwayFollow;
 
 			this.transform.RotateAround (follow.position, Vector3.up, Input.GetAxis ("Mouse X") * mouseRotSpeed * Time.deltaTime);
 

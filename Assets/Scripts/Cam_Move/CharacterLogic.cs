@@ -51,19 +51,19 @@ public class CharacterLogic : MonoBehaviour {
 			mouseHor = Mathf.Clamp(Input.GetAxis ("Mouse X"), -1f, 1f);
 			mouseVer = Input.GetAxis ("Mouse Y");
 
-			if (gamecam.state == CameraController.CamState.Follow){
+			if (gamecam.state == CameraController.CamState.Follow) {
 
 				stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
 
 				animator.SetFloat ("Speed", speed);
 				//animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
 			} else if (gamecam.state == CameraController.CamState.Aim) {
-				animator.SetFloat ("Speed", ver);
-				transform.position = transform.position + (transform.right * hor * Time.deltaTime * 5);
+				animator.SetFloat ("Speed", 0);
+				/*transform.position = transform.position + (transform.right * hor * Time.deltaTime * 5);
 
 				if (ver < 0) {
 					transform.position = transform.position + (transform.forward * ver * Time.deltaTime * 5);
-				}
+				}*/
 				Quaternion deltaRotation = Quaternion.Euler (new Vector3(0, rotationDegreePerSecond * mouseHor, 0));
 				this.transform.rotation = Quaternion.Slerp(this.transform.rotation, this.transform.rotation * deltaRotation, 2 * Time.deltaTime);
 			}

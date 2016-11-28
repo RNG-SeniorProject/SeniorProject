@@ -24,14 +24,14 @@ public class AttackController : MonoBehaviour {
 
 		if (Input.GetMouseButton (0)) {
 			if (activeAttacks.Count != 0) {
-				if (cam.state == CameraController.CamState.Follow) {
+				//if (cam.state == CameraController.CamState.Follow) {
 					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
 						animator.SetBool ("Swipe", true);
 						StartCoroutine (delayedWait("Swipe", 1));
 					}
 
-				} else {
+				/*} else {
 					if (!util.chrLogic.inLocomotion())
 					if (activeAttacks [1].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
@@ -39,7 +39,7 @@ public class AttackController : MonoBehaviour {
 
 						StartCoroutine (delayedWait("Ranged", 1));
 					}
-				}
+				}*/
 			}
 		}
 	}

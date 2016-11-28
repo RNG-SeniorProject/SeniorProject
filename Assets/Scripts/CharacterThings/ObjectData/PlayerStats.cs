@@ -65,7 +65,7 @@ public class PlayerStats : CharacterStats {
 		changeHunger (hungerModBase * Time.deltaTime);
 
 		if ((Hunger/MaxHunger) < .25f) {
-			changeHealth (-30 * Time.deltaTime, true);
+			changeHealth (-10 * Time.deltaTime, true);
 		} else if (Hunger/MaxHunger > .8f){
 			changeHealth (5 * Time.deltaTime, true);
 		}
