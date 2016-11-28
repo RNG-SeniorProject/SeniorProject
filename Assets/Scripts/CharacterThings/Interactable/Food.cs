@@ -21,6 +21,9 @@ public abstract class Food : Interactable {
 	public override void interact (GameObject chr){
 		Animator anim = chr.GetComponent<Animator> ();
 		anim.SetBool ("Eating", true);
+		AudioSource audio = chr.GetComponent<AudioSource> ();
+		if (!audio.isPlaying)
+			audio.Play ();
 
 		StartCoroutine (delayedWait("Eating", 1, anim, chr));
 	}
