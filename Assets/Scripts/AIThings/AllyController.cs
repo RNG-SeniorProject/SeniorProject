@@ -24,6 +24,7 @@ public class AllyController : MonoBehaviour {
 	public bool followPlayer;
 
 	public float idleRange = 10;
+	public int chaseCooldown = 1;
 
 	void Start () {
 		util = GameObject.Find ("GameManager").GetComponent<Util> ();
@@ -73,7 +74,7 @@ public class AllyController : MonoBehaviour {
 					agent.SetDestination (target);
 					animator.SetFloat ("Speed", 1.0f);
 					waitingToChase = true;
-					StartCoroutine ("ChaseCooldown", 5);
+					StartCoroutine ("ChaseCooldown", chaseCooldown);
 				}
 			} else {
 				enemiesInRange = new List<GameObject> ();
