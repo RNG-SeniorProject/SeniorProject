@@ -10,7 +10,7 @@ public class MeleeAttack: Attack {
 
 	protected List<GameObject> enemiesInRange;
 
-	private string tagToIgnore;
+	public string tagToIgnore;
 	private string myTag;
 
 	void Start(){

@@ -26,6 +26,8 @@ public class AllyController : MonoBehaviour {
 	public float idleRange = 10;
 
 	void Start () {
+		util = GameObject.Find ("GameManager").GetComponent<Util> ();
+
 		player = GameObject.FindWithTag ("Player");
 		if (player == null)
 			Debug.Log ("Player not tagged");
@@ -44,6 +46,8 @@ public class AllyController : MonoBehaviour {
 
 		myTag = gameObject.tag;
 		tagToIgnore = "Player";
+
+		StartIdleWalk ();
 	}
 
 	void Update () {
@@ -112,7 +116,7 @@ public class AllyController : MonoBehaviour {
 		}
 	}
 
-	private void StartIdleWalk () {
+	public void StartIdleWalk () {
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
 		if (((packCon.idlePos + ((idleRange) * den.currentDen.transform.right)) - transform.position).magnitude > idleRange) {
 			target = new Vector3 (packCon.idlePos.x + Random.Range (-idleRange, idleRange), packCon.idlePos.y, packCon.idlePos.z + Random.Range (-idleRange, idleRange)) + 2 * idleRange * den.currentDen.transform.right;

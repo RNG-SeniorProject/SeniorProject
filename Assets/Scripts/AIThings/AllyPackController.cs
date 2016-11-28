@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class AllyPackController : MonoBehaviour {
 
 	public Util util;
 
 	public Vector3 idlePos;
-	private AllyController[] allyControllers;
+	public AllyController[] allyControllers;
 	public bool isMigrating;
 	public bool wait = false;
+
+	public int numPack = 0;
+	public int allyCap = 0;
 
 	void Start () {
 		idlePos = util.den.currentDen.transform.position;
@@ -46,6 +50,8 @@ public class AllyPackController : MonoBehaviour {
 		newAllyControllers [newAllyControllers.Length - 1] = newPackMember.GetComponent ("AllyController") as AllyController;
 
 		allyControllers = newAllyControllers;
+
+		util.den.population++;
 	}
 
 	public void RemovePackMember (int id) {
@@ -57,6 +63,8 @@ public class AllyPackController : MonoBehaviour {
 			newAllyControllers [i] = allyControllers [i + 1];
 		}
 		allyControllers = newAllyControllers;
+
+		util.den.population--;
 	}
 
 	public void RemovePackMember (GameObject packMember) {
@@ -76,6 +84,8 @@ public class AllyPackController : MonoBehaviour {
 		if (!removed)
 			Debug.Log ("Failed to remove pack member");
 		allyControllers = newAllyControllers;
+
+		util.den.population--;
 	}
 
 	public bool CheckMigration () {
@@ -91,5 +101,34 @@ public class AllyPackController : MonoBehaviour {
 	public void Migrate () {
 		isMigrating = true;
 		idlePos = util.den.currentDen.transform.position;
+	}
+
+	public void addFollowMember(){
+		if (numPack >= allyCap) {return;}
+
+		foreach (AllyController ally in allyControllers) {
+			if (!ally.followPlayer) {
+				ally.SwapFollowMode ();
+
+				numPack++;
+
+				util.packSize.transform.Find ("Current").GetComponent<Text> ().text = numPack.ToString ();;
+				return;
+			}
+		}
+	}
+
+	public void removeFollowMember(){
+		foreach (AllyController ally in allyControllers) {
+			if (ally.followPlayer) {
+				ally.SwapFollowMode ();
+				ally.StartIdleWalk ();
+
+				numPack--;
+
+				util.packSize.transform.Find ("Current").GetComponent<Text> ().text = numPack.ToString ();;
+				return;
+			}
+		}
 	}
 }

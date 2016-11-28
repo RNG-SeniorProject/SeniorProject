@@ -17,7 +17,9 @@ public class Util : MonoBehaviour{
 	public InteractionController intController;
 	public TimeController time;
 
+	public AllyPackController allyPack;
 	public DenController den;
+	public GameObject packmember;
 
 	public UIManager uiManager;
 	public Canvas canvas;
@@ -25,6 +27,8 @@ public class Util : MonoBehaviour{
 	public Image plrEnergyGui;
 	public Image plrHungerGui;
 	public Image interactionUi;
+
+	public Image packSize;
 
 	public Image startScreen;
 	public Image pauseScreen;
@@ -43,4 +47,15 @@ public class Util : MonoBehaviour{
 
 	public string plrMeleeBuff;
 	public string plrRangedBuff;
+
+	public GameObject lonePrey;
+
+	public GameObject smallHerd;
+	public GameObject mediumHerd;
+	public GameObject bigHerd;
+
+	public PredSpawnController predSpawn;
+	public PreySpawnController preySpawn;
+
+	public Terrain ter;
 }

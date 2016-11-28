@@ -87,9 +87,9 @@ public class UIManager : MonoBehaviour {
 
 		if (Input.GetKeyDown ("return")) {
 			if (time.paused) {
-				pause ();
-			} else {
 				unpause ();
+			} else {
+				pause ();
 			}
 		}
 
@@ -186,13 +186,13 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void pause(){
-		time.resume ();
-		pauseScreen.gameObject.SetActive (false);
+		time.pause ();
+		pauseScreen.gameObject.SetActive (true);
 	}
 
 	public void unpause(){
-		time.pause ();
-		pauseScreen.gameObject.SetActive (true);
+		time.resume ();
+		pauseScreen.gameObject.SetActive (false);
 	}
 
 	public void revealMigrateWarning(){

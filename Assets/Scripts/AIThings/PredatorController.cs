@@ -26,6 +26,7 @@ public class PredatorController : MonoBehaviour {
 	public float rangeMultiplier = 1;
 
 	void Start () {
+
 		player = GameObject.FindWithTag ("Player");
 		if (player == null)
 			Debug.Log ("Player not tagged");
@@ -46,9 +47,13 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		if (packLeader != null) {
-			den = transform.parent.parent.gameObject;
+			if (transform.parent.parent != null) {
+				den = transform.parent.parent.gameObject;
+			}
 		} else {
-			den = transform.parent.gameObject;
+			if (transform.parent != null) {
+				den = transform.parent.gameObject;
+			}
 		}
 		attackCon = gameObject.GetComponent ("PredatorAttackController") as PredatorAttackController;
 		animator = GetComponent<Animator> ();

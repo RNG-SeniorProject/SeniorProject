@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Den : Interactable {
 	private DenController denController;
 
 	public float popCap;
 	public float foodSpawn;
+
+	public List<GameObject> herds;
+
+	public float spawnTime = 1000;
 
 	public float MaxHunger;
 
@@ -21,6 +26,24 @@ public class Den : Interactable {
 
 		if (denController.currentDen == this){
 			interactionString = "Feed pack.";
+		}
+
+		spawnTime = 1000;
+	}
+
+	void Update(){
+		if (util.den.currentDen != this) {
+			spawnTime += Time.deltaTime;
+
+			if (spawnTime > 60) {
+				util.preySpawn.spawnNearPlayerDen (this);
+			}
+		}
+
+		foreach (GameObject herd in herds) {
+			if (herd.transform.childCount == 0) {
+				removeHerd (herd);
+			}
 		}
 	}
 
@@ -55,5 +78,15 @@ public class Den : Interactable {
 		denController.startMigration ();
 		interactionString = "Feed pack.";
 		uiManager.updateInteractionText (interactionString);
+	}
+
+	public void addHerd(GameObject herd){
+		herds.Add (herd);
+		spawnTime = 0;
+
+	}
+
+	public void removeHerd(GameObject herd){
+		herds.Remove (herd);
 	}
 }

@@ -8,6 +8,12 @@ public class DamageBoost : PowerUp {
 	private RangedAttack attR;
 
 	void Start(){
+		Init ();
+	}
+
+	protected override void Init(){
+		base.Init ();
+
 		attM = util.melee;
 		attR = util.ranged;
 	}

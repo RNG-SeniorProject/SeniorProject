@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+using UnityEngine.SceneManagement;
+
 public class PlayerStats : CharacterStats {
 	public static PlayerStats control;
 	public static GameObject plr;
@@ -35,12 +37,12 @@ public class PlayerStats : CharacterStats {
 	}
 
 	protected override void Init () {
-		if (control == null) {
+		/*if (control == null) {
 			DontDestroyOnLoad (gameObject);	
 			control = this;
 		} else if (control != this){
 			Destroy (this);
-		}
+		}*/
 
 		base.Init ();
 
@@ -84,5 +86,10 @@ public class PlayerStats : CharacterStats {
 		plr.transform.eulerAngles = respawnRot;
 
 		Init ();
+	}
+
+	protected override void Die ()
+	{
+		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 	}
 }

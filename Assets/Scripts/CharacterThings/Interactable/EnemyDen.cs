@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class EnemyDen : Interactable {
@@ -32,6 +33,9 @@ public class EnemyDen : Interactable {
 		active = false;
 		removeFromPlr ();
 		gameObject.GetComponent<Den> ().addToPlr ();
+
+		util.allyPack.allyCap++;
+		util.packSize.transform.Find ("Max").GetComponent<Text> ().text = util.allyPack.allyCap.ToString();
 
 		foreach (PowerUp PU in transform.Find("PowerUps").GetComponents<PowerUp>()) {
 			PU.powerUp ();
