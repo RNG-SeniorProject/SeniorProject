@@ -16,7 +16,7 @@ public class PredatorPackController : MonoBehaviour {
 
 		predatorControllers = new PredatorController[predators.Length];
 		for (int i = 0; i < predators.Length; i++) {
-			predatorControllers[i] = predators [i].GetComponent ("PredatorController") as PredatorController;
+			predatorControllers [i] = predators [i].GetComponent ("PredatorController") as PredatorController;
 		}
 	}
 
@@ -26,13 +26,17 @@ public class PredatorPackController : MonoBehaviour {
 
 	public void StartChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {
-			predatorControllers[i].StartChasing ();
+			if (predatorControllers [i].gameObject != null) {
+				predatorControllers [i].StartChasing ();
+			}
 		}
 	}
 
 	public void StopChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {
-			predatorControllers[i].StopChasing ();
+			if (predatorControllers [i].gameObject != null) {
+				predatorControllers [i].StopChasing ();
+			}
 		}
 	}
 }

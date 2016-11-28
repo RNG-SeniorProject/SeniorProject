@@ -22,7 +22,7 @@ public class PredatorController : MonoBehaviour {
 	public float chaseRange = 10;
 	public float visionAngle = 60;
 	public float idleRange = 10;
-	public float chaseCooldown = 5;
+	public float chaseCooldown = 1;
 	public float rangeMultiplier = 1;
 
 	void Start () {
