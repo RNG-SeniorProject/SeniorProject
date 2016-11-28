@@ -109,6 +109,10 @@ public class UIManager : MonoBehaviour {
 	public void changeEnemyHealth(Destructible chr, bool visible){
 		if (chr.transform.tag == "Player") { return;}
 
+		if ((chr.transform.position - plr.transform.position).magnitude > 30) {
+			return;
+		}
+
 		if (chr.healthBar == null) {
 			initEnemyHealth (chr);
 		}
