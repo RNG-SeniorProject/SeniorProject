@@ -18,10 +18,19 @@ public class ProjectileCollision : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col){
-		Destructible des = col.gameObject.GetComponent<Destructible> ();
 
-		if (des != null && !(col.transform.tag == atkInfo.myTag || col.transform.tag == atkInfo.tagToIgnore)) {
-			des.changeHealth (atkInfo.baseDamage, true);
+		/*if (col.gameObject.CompareTag (atkInfo.tagToGet)) {
+			col.gameObject.GetComponent<CharacterStats> ().takeDamage (atkInfo.baseDamage);
+
+			foreach (GameObject effect in atkInfo.effects) {
+				effect.GetComponent<Effect>().activateEffect (col.gameObject);
+			}
+
+			Destroy (gameObject);
+		}*/
+
+		if (col.gameObject.GetComponent<Destructible>() != null && !col.transform.CompareTag("Player")) {
+			col.gameObject.GetComponent<CharacterStats> ().changeHealth (atkInfo.baseDamage, true);
 
 			foreach (GameObject effect in atkInfo.effects) {
 				effect.GetComponent<Effect>().activateEffect (col.gameObject);

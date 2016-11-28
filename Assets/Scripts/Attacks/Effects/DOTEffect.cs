@@ -21,7 +21,7 @@ public class DOTEffect : Effect {
 		float timer = 0f;
 
 		while (timer < duration && chr != null){
-			chr.GetComponent<Destructible>().changeHealth (-damagePerTic, true);
+			chr.GetComponent<Destructible>().changeHealth (damagePerTic, true);
 			timer += 1/tickPerSec;
 			yield return new WaitForSeconds (1/tickPerSec);	
 		}	

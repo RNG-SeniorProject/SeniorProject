@@ -36,8 +36,6 @@ public class CharacterStats : Destructible {
 	}
 
 	void Update(){
-		if (util.time.paused) {return;}
-
 		update ();
 	}
 

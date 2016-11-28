@@ -9,11 +9,13 @@ public class PreyController : MonoBehaviour {
 	private Animator animator;
 	private NavMeshAgent agent;
 	private bool alarmed;
-	private bool disturbed;
 	private bool idleWalking;
 	private Vector3 target;
+<<<<<<< HEAD
 	private Vector3 enemyPos;
 	private AudioSource hurtSound;
+=======
+>>>>>>> NataliesJunk
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
@@ -44,48 +46,38 @@ public class PreyController : MonoBehaviour {
 		agent = GetComponent<NavMeshAgent> ();
 
 		alarmed = false;
-		disturbed = false;
 		idleWalking = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
+<<<<<<< HEAD
 		enemyPos = player.transform.position;
 
 		hurtSound = GetComponent<AudioSource> ();
+=======
+>>>>>>> NataliesJunk
 	}
 
 	void Update () {
-		Collider[] enemies = Physics.OverlapSphere (transform.position, chaseRange);
-		foreach (Collider hit in enemies) {
-			if (hit.gameObject.GetComponent<Destructible> () != null) {
-				if (hit.gameObject.tag != "Prey") {
-					enemyPos = hit.gameObject.transform.position;
-				}
-			}
-		}
+		Vector3 targetDir = player.transform.position - transform.position;
+		float angle = Vector3.Angle (targetDir, transform.forward);
 
-		if (!alarmed && (enemyPos - transform.position).magnitude < chaseRange) {
+		// if target is within the angle of vision and within chase range
+		if (!alarmed && angle < visionAngle && targetDir.magnitude < chaseRange) {
 			if (herdLeader != null) {
 				herdLeaderController.StartFleeing ();
 			} else {
 				StartFleeing ();
 			}
-		} else if (alarmed && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange)) {
+		} else if (alarmed && targetDir.magnitude > rangeMultiplier * chaseRange) {
 			StopFleeing ();
 		}
 
 		if (alarmed) {
-			target = 2 * transform.position - enemyPos;
+			target = new Vector3 (transform.position.x - targetDir.x, transform.position.y - targetDir.y, transform.position.z - targetDir.z);
 			agent.SetDestination (target);
 			animator.SetFloat ("Speed", 1f);
 		} else {
-			if (!disturbed && Random.value < 0.001) {
+			if (Random.value < 0.001) {
 				StartIdleWalk ();
-			}
-			if (disturbed) {
-				if ((target - transform.position).magnitude < 2.5) {
-					disturbed = false;
-					agent.ResetPath ();
-					animator.SetFloat ("Speed", 0.0f);
-				}
 			}
 			if (idleWalking) {
 				if ((target - transform.position).magnitude < 2.5) {
@@ -95,6 +87,7 @@ public class PreyController : MonoBehaviour {
 		}
 	}
 
+<<<<<<< HEAD
 	public void OnHit (GameObject attacker) {
 		disturbed = true;
 		if (!hurtSound.isPlaying) {
@@ -105,6 +98,8 @@ public class PreyController : MonoBehaviour {
 		animator.SetFloat ("Speed", 1.0f);
 	}
 
+=======
+>>>>>>> NataliesJunk
 	private void StartIdleWalk () {
 		target = new Vector3 (transform.position.x + Random.Range (-idleRange, idleRange), transform.position.y, transform.position.z + Random.Range (-idleRange, idleRange));
 		if (herdLeader != null && (herdLeader.transform.position - transform.position).magnitude > idleRange) {

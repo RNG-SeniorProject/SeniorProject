@@ -10,7 +10,7 @@ public class MeleeAttack: Attack {
 
 	protected List<GameObject> enemiesInRange;
 
-	public string tagToIgnore;
+	private string tagToIgnore;
 	private string myTag;
 
 	AudioSource attackSound;
@@ -54,6 +54,7 @@ public class MeleeAttack: Attack {
 			if (Vector3.Dot (chr.transform.forward.normalized, plrToEnemy.normalized) >= sweep) {
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
+<<<<<<< HEAD
 				PredatorController pred = enemy.GetComponent<PredatorController> ();
 				PreyController prey = enemy.GetComponent<PreyController> ();
 				if (pred != null) {
@@ -63,6 +64,8 @@ public class MeleeAttack: Attack {
 					prey.OnHit (chr);
 				}
 
+=======
+>>>>>>> NataliesJunk
 				stats.changeHealth (-baseDamage, true);
 			}
 
