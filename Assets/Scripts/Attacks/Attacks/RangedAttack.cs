@@ -10,16 +10,18 @@ public class RangedAttack : Attack {
 	[SerializeField]
 	protected CameraController cam;
 
-	public string tagToGet = "Enemy";
+	public string tagToIgnore;
+	public string myTag;
+
+	void Start(){
+		myTag = transform.parent.parent.tag;
+
+	}
 
 	public override bool performAttack (GameObject chr) {
 
 		if (!base.performAttack (chr)) {
 			return false;
-		}
-
-		if (chr.CompareTag("Enemy")) {
-			tagToGet = "Player";
 		}
 
 		StartCoroutine (createProjectile(.75f, chr));

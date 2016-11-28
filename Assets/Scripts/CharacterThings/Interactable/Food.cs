@@ -6,6 +6,8 @@ public abstract class Food : Interactable {
 	public float use;
 	public float hunger;
 
+	public float timeAlive = 0;
+
 	void Start(){
 		Init ();
 	}
@@ -16,7 +18,6 @@ public abstract class Food : Interactable {
 		interactionString = "Eat.";
 	}
 
-<<<<<<< HEAD
 	void Update(){
 		timeAlive += Time.deltaTime;
 
@@ -25,8 +26,6 @@ public abstract class Food : Interactable {
 		}
 	}
 
-=======
->>>>>>> NataliesJunk
 	protected abstract void eat (GameObject chr);
 
 	public override void interact (GameObject chr){

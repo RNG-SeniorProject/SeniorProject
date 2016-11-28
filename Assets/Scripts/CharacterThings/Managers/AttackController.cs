@@ -20,6 +20,8 @@ public class AttackController : MonoBehaviour {
 	}
 
 	void Update(){
+		if (util.time.paused) {return;}
+
 		if (Input.GetMouseButton (0)) {
 			if (activeAttacks.Count != 0) {
 				if (cam.state == CameraController.CamState.Follow) {
@@ -30,7 +32,7 @@ public class AttackController : MonoBehaviour {
 					}
 
 				} else {
-					if (!util.chrLogic.IsInLocomotion())
+					if (!util.chrLogic.inLocomotion())
 					if (activeAttacks [1].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
 						animator.SetBool ("Ranged", true);

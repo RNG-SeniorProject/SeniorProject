@@ -6,12 +6,25 @@ public class UIManager : MonoBehaviour {
 
 	public Util util;
 
+	private TimeController time;
+
 	private Canvas canvas;
 	private Camera cam;
 
 	private PlayerStats plr;
 
 	private DenController den;
+
+	private Image startScreen;
+	private Image pauseScreen;
+
+	public Image migrateWarn;
+	public Image starveWarn;
+
+	private Image warningScreen;
+	private Text warningText;
+	private float warningTime;
+	private float warningMaxTime = 4;
 
 	private Image plrHealthBar;
 	private Image plrEnergyBar;
@@ -33,29 +46,58 @@ public class UIManager : MonoBehaviour {
 	public float uiMaxTime;
 
 	void Start(){
+		time = util.time;
+
 		canvas = util.canvas;
 		cam = util.cam;
 
 		plr = util.plr;
 
 		plrHealthBar = util.plrHealthGui;
-		plrHealthSlider = plrHealthBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
+		plrHealthSlider = plrHealthBar.transform.Find ("Mask").Find ("Image").GetComponent<Image> ();
 
 		plrEnergyBar = util.plrEnergyGui;
-		plrEnergySlider = plrEnergyBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
+		plrEnergySlider = plrEnergyBar.transform.Find ("Mask").Find ("Image").GetComponent<Image> ();
 
 		plrHungerBar = util.plrHungerGui;
-		plrHungerSlider = plrHungerBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
+		plrHungerSlider = plrHungerBar.transform.Find ("Mask").Find ("Image").GetComponent<Image> ();
 
 		denHungerBar = util.denHungerGui;
-		denHungerSlider = denHungerBar.transform.Find("Mask").Find("Image").GetComponent<Image> ();
+		denHungerSlider = denHungerBar.transform.Find ("Mask").Find ("Image").GetComponent<Image> ();
 
 		enemyHealthPrefab = util.enemyHealthPrefab;
-		enemyHealthUIScale = enemyHealthPrefab.GetComponent<Image>().rectTransform.localScale;
+		enemyHealthUIScale = enemyHealthPrefab.GetComponent<Image> ().rectTransform.localScale;
 
 		interactionUI = util.interactionUi;
 
 		den = util.den;
+
+		startScreen = util.startScreen;
+		pauseScreen = util.pauseScreen;
+
+		starveWarn = util.starveWarn;
+		migrateWarn = util.migrateWarn;
+
+		warningScreen = util.warningScreen;
+		warningText = warningScreen.transform.Find ("Text").GetComponent<Text>();
+	}
+
+	void Update(){
+		if (util.time.paused) {return;}
+
+		if (Input.GetKeyDown ("return")) {
+			if (time.paused) {
+				unpause ();
+			} else {
+				pause ();
+			}
+		}
+
+		warningTime += Time.deltaTime;
+
+		if (warningTime > warningMaxTime) {
+			hideWarning ();
+		}
 	}
 
 	public void initEnemyHealth(Destructible chr){
@@ -131,5 +173,51 @@ public class UIManager : MonoBehaviour {
 
 	public void updateInteractionText(string text){
 		util.interactionUi.transform.Find("Text").GetComponent<Text>().text = "'e': " + text;
+	}
+
+
+
+
+
+
+	public void startOnClick(){
+		time.resume ();
+		startScreen.gameObject.SetActive (false);
+	}
+
+	public void pause(){
+		time.pause ();
+		pauseScreen.gameObject.SetActive (true);
+	}
+
+	public void unpause(){
+		time.resume ();
+		pauseScreen.gameObject.SetActive (false);
+	}
+
+	public void revealMigrateWarning(){
+		migrateWarn.gameObject.SetActive (true);
+	}
+
+	public void hideMigrateWarning(){
+		migrateWarn.gameObject.SetActive (false);
+	}
+
+	public void revealStarveWarning(){
+		starveWarn.gameObject.SetActive (true);
+	}
+
+	public void hideStarveWarning(){
+		starveWarn.gameObject.SetActive (false);
+	}
+
+	public void displayWarning(string message){
+		warningTime = 0;
+		warningScreen.gameObject.SetActive (true);
+		warningText.text = message;
+	}
+
+	public void hideWarning(){
+		warningScreen.gameObject.SetActive (false);
 	}
 }
