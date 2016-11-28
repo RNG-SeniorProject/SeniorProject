@@ -13,6 +13,7 @@ public class PreyController : MonoBehaviour {
 	private bool idleWalking;
 	private Vector3 target;
 	private Vector3 enemyPos;
+	private AudioSource hurtSound;
 
 	public float chaseRange = 10;
 	public float visionAngle = 60;
@@ -47,6 +48,8 @@ public class PreyController : MonoBehaviour {
 		idleWalking = false;
 		target = new Vector3 (transform.position.x, transform.position.y, transform.position.z);
 		enemyPos = player.transform.position;
+
+		hurtSound = GetComponent<AudioSource> ();
 	}
 
 	void Update () {
@@ -94,7 +97,10 @@ public class PreyController : MonoBehaviour {
 
 	public void OnHit (GameObject attacker) {
 		disturbed = true;
-		target = new Vector3 (2 * transform.position.x - attacker.transform.position.x, 2 * transform.position.y - attacker.transform.position.y, 2 * transform.position.z - attacker.transform.position.z);
+		if (!hurtSound.isPlaying) {
+			hurtSound.Play ();
+		}
+		target = 2 * transform.position - attacker.transform.position;
 		agent.SetDestination (target);
 		animator.SetFloat ("Speed", 1.0f);
 	}

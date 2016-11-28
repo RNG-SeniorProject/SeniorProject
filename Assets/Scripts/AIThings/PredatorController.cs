@@ -19,6 +19,8 @@ public class PredatorController : MonoBehaviour {
 	private bool waitingToBreak;
 	private bool waitingToChase;
 
+	private AudioSource aggressiveAudio;
+
 	public float chaseRange = 10;
 	public float visionAngle = 60;
 	public float idleRange = 10;
@@ -68,6 +70,8 @@ public class PredatorController : MonoBehaviour {
 
 		enemy = player;
 		enemyPos = player.transform.position;
+
+		aggressiveAudio = GetComponent<AudioSource> ();
 	}
 
 	void Update () {
@@ -82,7 +86,7 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		// if target is within the angle of vision and within chase range
-		if (!targeted && (enemyPos - transform.position).magnitude < chaseRange) {
+		if (!targeted && enemy != null && (enemyPos - transform.position).magnitude < chaseRange) {
 			if (packLeader != null) {
 				packLeaderController.StartChasing ();
 			} else {
@@ -97,7 +101,10 @@ public class PredatorController : MonoBehaviour {
 		}
 
 		if (targeted) {
-			if ((den.transform.position - transform.position).magnitude < 100) {
+			if (!aggressiveAudio.isPlaying) {
+				aggressiveAudio.Play ();
+			}
+			if (den == null || (den.transform.position - transform.position).magnitude < 100) {
 				attackCon.SetTarget (enemy);
 				target = new Vector3 (enemyPos.x, enemyPos.y, enemyPos.z);
 				agent.SetDestination (target);
@@ -106,11 +113,16 @@ public class PredatorController : MonoBehaviour {
 				packLeaderController.StopChasing ();
 			}
 		} else {
+			aggressiveAudio.Stop ();
 			if (!disturbed && Random.value < 0.001) {
 				StartIdleWalk ();
 			}
 			if (disturbed) {
+				if (!aggressiveAudio.isPlaying) {
+					aggressiveAudio.Play ();
+				}
 				if ((target - transform.position).magnitude < 2.5) {
+					aggressiveAudio.Stop ();
 					disturbed = false;
 					agent.ResetPath ();
 					animator.SetFloat ("Speed", 0.0f);

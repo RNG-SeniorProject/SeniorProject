@@ -13,14 +13,19 @@ public class MeleeAttack: Attack {
 	public string tagToIgnore;
 	private string myTag;
 
+	AudioSource attackSound;
+
 	void Start(){
 		myTag = gameObject.transform.parent.parent.gameObject.tag;
+		attackSound = GetComponent<AudioSource> ();
 	}
 
 	public override bool performAttack(GameObject chr){
 		if (!base.performAttack (chr)) {
 			return false;
 		}
+
+		attackSound.Play ();
 
 		enemiesInRange = new List<GameObject> ();
 
@@ -49,18 +54,16 @@ public class MeleeAttack: Attack {
 			if (Vector3.Dot (chr.transform.forward.normalized, plrToEnemy.normalized) >= sweep) {
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
-				stats.changeHealth (-baseDamage, true);
-
 				PredatorController pred = enemy.GetComponent<PredatorController> ();
 				PreyController prey = enemy.GetComponent<PreyController> ();
-
 				if (pred != null) {
-					pred.OnHit (enemy);
+					pred.OnHit (chr);
+				}
+				if (prey != null) {
+					prey.OnHit (chr);
 				}
 
-				if (prey != null) {
-					prey.OnHit (enemy);
-				}
+				stats.changeHealth (-baseDamage, true);
 			}
 
 			foreach (GameObject effect in effects) {

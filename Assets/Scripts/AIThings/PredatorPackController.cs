@@ -4,11 +4,8 @@ using System.Collections;
 public class PredatorPackController : MonoBehaviour {
 
 	private PredatorController[] predatorControllers;
-	private GameObject den;
 
 	void Start () {
-		den = transform.parent.gameObject;
-
 		GameObject[] predators = new GameObject[transform.childCount];
 		for (int i = 0; i < predators.Length; i++) {
 			predators [i] = transform.GetChild (i).gameObject;
@@ -19,10 +16,6 @@ public class PredatorPackController : MonoBehaviour {
 			predatorControllers [i] = predators [i].GetComponent ("PredatorController") as PredatorController;
 		}
 	}
-
-	/* public GameObject GetDen () {
-		return den;
-	} */
 
 	public void StartChasing () {
 		for (int i = 0; i < predatorControllers.Length; i++) {

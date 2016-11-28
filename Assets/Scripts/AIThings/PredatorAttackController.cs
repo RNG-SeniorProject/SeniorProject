@@ -27,7 +27,10 @@ public class PredatorAttackController : MonoBehaviour {
 	}
 
 	void Update(){
-		if (predatorController.IsChasing() && (transform.position - target.transform.position).magnitude < 5) {
+		if (target == null) {
+			predatorController.StopChasing ();
+		}
+		if (predatorController.IsChasing() && target != null && (transform.position - target.transform.position).magnitude < 5) {
 			if (activeAttacks.Count != 0) {
 				// if (cam.state == CameraController.CamState.Follow) {
 					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
