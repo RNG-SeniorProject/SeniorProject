@@ -92,11 +92,11 @@ public class PredatorController : MonoBehaviour {
 			} else {
 				StartChasing ();
 			}
-		} else if (targeted && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange) && gameObject.GetInstanceID() == packLeader.GetInstanceID()) { // target gets out of leader chase range
-			if (packLeader != null) {
+		} else if (targeted && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange)) { // target gets out of leader chase range
+			if (packLeader != null && gameObject.GetInstanceID() == packLeader.GetInstanceID()) {
 				packLeaderController.StopChasing ();
 			} else {
-				StartChasing ();
+				StopChasing ();
 			}
 		}
 
