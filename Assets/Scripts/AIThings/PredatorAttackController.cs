@@ -27,31 +27,32 @@ public class PredatorAttackController : MonoBehaviour {
 	}
 
 	void Update(){
-		if (target == null) {
-			predatorController.StopChasing ();
-		}
-		if (predatorController.IsChasing() && target != null && (transform.position - target.transform.position).magnitude < 5) {
-			if (activeAttacks.Count != 0) {
-				// if (cam.state == CameraController.CamState.Follow) {
+		if (predatorController.IsChasing ()) {
+			if (target == null) {
+				predatorController.StopChasing ();
+			} else if (target != null && (transform.position - target.transform.position).magnitude < 5) {
+				if (activeAttacks.Count != 0) {
+					// if (cam.state == CameraController.CamState.Follow) {
 					if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 						Quaternion turnDirection = Quaternion.LookRotation (target.transform.position - transform.position, Vector3.up);
 						transform.rotation = Quaternion.Slerp (transform.rotation, turnDirection, .5f);
 
 						animator.SetBool ("Swipe", true);
 
-						StartCoroutine (delayedWait("Swipe", 1));
+						StartCoroutine (delayedWait ("Swipe", 1));
 					}
 
-				// }
-				/*else {
-					if (!util.chrLogic.IsInLocomotion())
-					if (activeAttacks [1].GetComponent<Attack> ().performAttack (transform.gameObject)) {
+					// }
+					/*else {
+						if (!util.chrLogic.IsInLocomotion())
+						if (activeAttacks [1].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 
-						animator.SetBool ("Ranged", true);
+							animator.SetBool ("Ranged", true);
 
-						StartCoroutine (delayedWait("Ranged", 1));
-					}
-				}*/
+							StartCoroutine (delayedWait("Ranged", 1));
+						}
+					}*/
+				}
 			}
 		}
 	}
