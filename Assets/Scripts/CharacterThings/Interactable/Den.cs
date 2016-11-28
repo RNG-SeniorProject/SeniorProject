@@ -32,12 +32,14 @@ public class Den : Interactable {
 	}
 
 	void Update(){
-		if (util.den.currentDen != this) {
-			spawnTime += Time.deltaTime;
+		spawnTime += Time.deltaTime;
 
-			if (spawnTime > 60) {
-				util.preySpawn.spawnNearPlayerDen (this);
-			}
+		if (herds.Count == 0) {
+			spawnTime += Time.deltaTime * 2;
+		}
+
+		if (spawnTime > 60) {
+			util.preySpawn.spawnNearPlayerDen (this);
 		}
 
 		foreach (GameObject herd in herds) {
@@ -68,7 +70,7 @@ public class Den : Interactable {
 		if (plr.Hunger <= plr.MaxHunger / 10) {return;}
 
 		plr.changeHunger (-plr.MaxHunger/10);
-		denController.changeHunger (denController.Hunger/10);
+		denController.changeHunger (MaxHunger/10);
 	}
 
 	private void startTravel(GameObject chr){

@@ -54,6 +54,9 @@ public class Util : MonoBehaviour{
 	public GameObject mediumHerd;
 	public GameObject bigHerd;
 
+	public GameObject lonePred;
+	public GameObject lonePack;
+
 	public PredSpawnController predSpawn;
 	public PreySpawnController preySpawn;
 

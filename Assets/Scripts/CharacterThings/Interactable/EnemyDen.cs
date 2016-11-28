@@ -4,7 +4,7 @@ using System.Collections;
 
 public class EnemyDen : Interactable {
 	public int population;
-	public PredatorPackController pack;
+	private PredatorPackController pack;
 
 	public PowerUp[] pwrUp;
 

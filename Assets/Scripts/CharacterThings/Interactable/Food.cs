@@ -21,7 +21,7 @@ public abstract class Food : Interactable {
 	void Update(){
 		timeAlive += Time.deltaTime;
 
-		if (timeAlive > 120) {
+		if (timeAlive > 60) {
 			Destroy (this);
 		}
 	}

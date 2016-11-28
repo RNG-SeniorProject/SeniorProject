@@ -50,7 +50,7 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		if (util.time.paused) {return;}
 
-		if (Input.GetMouseButtonDown (1)) {
+		/*if (Input.GetMouseButtonDown (1)) {
 			if (state == CamState.Follow) {
 				state = CamState.Aim;
 				//Cursor.lockState = CursorLockMode.Locked;
@@ -58,7 +58,7 @@ public class CameraController : MonoBehaviour {
 			} else if (state == CamState.Aim) {
 				state = CamState.Follow;
 			}
-		}
+		}*/
 	}
 
 	void LateUpdate(){

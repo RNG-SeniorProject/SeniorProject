@@ -38,7 +38,7 @@ public class AllyAttackController : MonoBehaviour {
 				// if (cam.state == CameraController.CamState.Follow) {
 				if (activeAttacks [0].GetComponent<Attack> ().performAttack (transform.gameObject)) {
 					Quaternion turnDirection = Quaternion.LookRotation (target.transform.position - transform.position, Vector3.up);
-					transform.rotation = Quaternion.Slerp (transform.rotation, turnDirection, .5f);
+					transform.rotation = Quaternion.Slerp (transform.rotation, turnDirection, 1f);
 
 					animator.SetBool ("Swipe", true);
 

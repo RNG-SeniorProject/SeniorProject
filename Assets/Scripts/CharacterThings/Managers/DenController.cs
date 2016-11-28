@@ -37,13 +37,13 @@ public class DenController : MonoBehaviour {
 
 		changeHunger(HungerModBase * population * Time.deltaTime);
 
-		if (population > currentDen.popCap) {
+		/*if (population > currentDen.popCap) {
 			panicDying = true;
 			uiManager.revealStarveWarning ();
 		} else {
 			panicDying = false;
 			uiManager.hideStarveWarning ();
-		}
+		}*/
 
 		if (Hunger <= 0) {
 			starveTime += Time.deltaTime;

@@ -48,13 +48,13 @@ public class PredSpawnController : MonoBehaviour {
 
 			GameObject pred;
 
-			if (rand < .7){
-				//pred = (GameObject)Instantiate (util.lonePred, transform.position, Quaternion.identity);
+			if (rand < .8){
+				pred = (GameObject)Instantiate (util.lonePred, transform.position, Quaternion.identity);
 			} else {
-				//pred = (GameObject)Instantiate (util.smallPack, transform.position, Quaternion.identity);
+				pred = (GameObject)Instantiate (util.lonePack, transform.position, Quaternion.identity);
 			} 
 
-			//addPred (pred);
+			addPred (pred);
 		}
 	}
 }

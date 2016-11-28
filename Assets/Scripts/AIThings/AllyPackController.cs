@@ -106,6 +106,8 @@ public class AllyPackController : MonoBehaviour {
 	public void addFollowMember(){
 		if (numPack >= allyCap) {return;}
 
+		if (util.den.population == 0) {return;}
+
 		foreach (AllyController ally in allyControllers) {
 			if (!ally.followPlayer) {
 				ally.SwapFollowMode ();
