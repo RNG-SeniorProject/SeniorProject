@@ -4,7 +4,7 @@ using System.Collections;
 
 public class EnemyDen : Interactable {
 	public int population;
-	private PredatorPackController pack;
+	public PredatorPackController pack;
 
 	public PowerUp[] pwrUp;
 
@@ -16,11 +16,11 @@ public class EnemyDen : Interactable {
 		base.Init ();
 
 		interactionString = "Capture this den.";
-		population = 0;//pack.transform.childCount;
+		population = pack.transform.childCount;
 	}
 
 	public override void interact (GameObject chr){
-		if (population > 0) {
+		if (pack.transform.childCount > 0) {
 			uiManager.displayWarning ("Enemies are still around.");
 			return;
 		}

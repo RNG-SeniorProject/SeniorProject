@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,7 +18,7 @@ public class MeleeAttack: Attack {
 	AudioSource attackSound;
 
 	void Start(){
-		myTag = gameObject.transform.parent.parent.gameObject.tag;
+		myTag = transform.parent.parent.gameObject.tag;
 		attackSound = GetComponent<AudioSource> ();
 	}
 
@@ -47,11 +49,17 @@ public class MeleeAttack: Attack {
 
 		foreach (GameObject enemy in enemiesInRange) {
 			Vector3 plrToEnemy = enemy.transform.position - chr.transform.position;
+			plrToEnemy.y = 0;
+
+			Vector3 myPos = chr.transform.forward;
+			myPos.y = 0;
 
 			Debug.DrawRay (chr.transform.position, plrToEnemy, Color.black, 2f);
 			Debug.DrawRay (chr.transform.position, chr.transform.forward, Color.black, 2f);
 
-			if (Vector3.Dot (chr.transform.forward.normalized, plrToEnemy.normalized) >= sweep) {
+			//if (Vector3.Dot (myPos.normalized, plrToEnemy.normalized) >= sweep) {
+			print(Vector3.Angle(myPos, plrToEnemy));
+			if (Vector3.Angle(myPos, plrToEnemy) < sweep){
 				Destructible stats = enemy.GetComponent<Destructible> ();
 
 				PredatorController pred = enemy.GetComponent<PredatorController> ();

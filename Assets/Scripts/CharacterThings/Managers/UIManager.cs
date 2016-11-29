@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
+using UnityEngine.SceneManagement;
+
 public class UIManager : MonoBehaviour {
 
 	public Util util;
@@ -45,6 +47,9 @@ public class UIManager : MonoBehaviour {
 
 	public float uiMaxTime;
 
+	public GameObject tutorials;
+	private int tutorialCurr = 0;
+
 	void Start(){
 		time = util.time;
 
@@ -80,6 +85,10 @@ public class UIManager : MonoBehaviour {
 
 		warningScreen = util.warningScreen;
 		warningText = warningScreen.transform.Find ("Text").GetComponent<Text>();
+
+		tutorials = util.tutorials;
+
+
 	}
 
 	void Update(){
@@ -185,8 +194,16 @@ public class UIManager : MonoBehaviour {
 
 
 	public void startOnClick(){
-		time.resume ();
 		startScreen.gameObject.SetActive (false);
+		updateTutorial ();
+
+		util.denHungerGui.transform.parent.gameObject.SetActive (true);
+		util.plrHealthGui.transform.parent.gameObject.SetActive (true);
+
+		util.cam.transform.position = util.plr.transform.position + util.plr.transform.forward*5;
+
+		pause ();
+
 	}
 
 	public void pause(){
@@ -223,5 +240,44 @@ public class UIManager : MonoBehaviour {
 
 	public void hideWarning(){
 		warningScreen.gameObject.SetActive (false);
+	}
+
+	public void updateTutorial(){
+		int num = 0;
+		foreach (Transform tutorialScreen in tutorials.transform) {
+			if (tutorialCurr == num) {
+				tutorialScreen.gameObject.SetActive (true);
+			} else {
+				tutorialScreen.gameObject.SetActive (false);
+			}
+			num++;
+		}
+	}
+
+	public void tutorialBack(){
+		if (tutorialCurr != 0) {
+			tutorialCurr--;
+			updateTutorial ();
+		}
+	}
+
+	public void tutorialNext(){
+		if (tutorialCurr < tutorials.transform.childCount) {
+			tutorialCurr++;
+			updateTutorial ();
+		}
+	}
+
+	public void gameOver(){
+		foreach (Transform tran in canvas.transform) {
+			tran.gameObject.SetActive (false);
+		}
+
+		time.paused = true;
+		util.gameOver.SetActive (true);
+	}
+
+	public void Restart(){
+		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
 	}
 }

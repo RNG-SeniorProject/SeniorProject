@@ -21,5 +21,7 @@ public class DamageBoost : PowerUp {
 	public override void powerUp (){
 		attM.baseDamage *= percIncrease;
 		attR.baseDamage *= percIncrease;
+
+		util.attackbase.text = util.attackbase.text + "+";
 	}
 }

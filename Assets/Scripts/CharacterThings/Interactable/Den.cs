@@ -67,9 +67,9 @@ public class Den : Interactable {
 	private void feedFamily(GameObject chr){
 		PlayerStats plr = chr.GetComponent<PlayerStats> ();
 
-		if (plr.Hunger <= plr.MaxHunger * .025) {return;}
+		if (plr.Hunger <= plr.MaxHunger * .1f) {return;}
 
-		plr.changeHunger (-plr.MaxHunger/10);
+		plr.changeHunger (-plr.MaxHunger * .025f);
 		denController.changeHunger (MaxHunger/10);
 	}
 

@@ -24,6 +24,8 @@ public class AddEffect : PowerUp {
 		if (effectM != null) {
 			effectM.transform.SetParent (attM.transform, true);
 			attM.effects.Add (effectM.gameObject);
+
+			effectM.changeText ();
 		}
 
 		if (effectR != null) {

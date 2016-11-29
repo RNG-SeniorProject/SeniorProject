@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine.SceneManagement;
-
 public class PlayerStats : CharacterStats {
 	public static PlayerStats control;
 	public static GameObject plr;
@@ -90,8 +88,8 @@ public class PlayerStats : CharacterStats {
 		Init ();
 	}
 
-	protected override void Die ()
-	{
-		SceneManager.LoadScene (SceneManager.GetActiveScene().name);
+	protected override void Die () {
+		util.uiManager.gameOver ();
+		Destroy (gameObject);
 	}
 }

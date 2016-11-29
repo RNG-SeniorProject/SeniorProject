@@ -75,7 +75,7 @@ public class CharacterLogic : MonoBehaviour {
 
 		if (plrMoveDirection != Vector3.zero) {
 			Quaternion plrInputDir = Quaternion.LookRotation (plrMoveDirection, Vector3.up);
-			transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .1f);
+			transform.rotation = Quaternion.Slerp (transform.rotation, plrInputDir, speed * .5f);
 		}
 
 		if (inLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {

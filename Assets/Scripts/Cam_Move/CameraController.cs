@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour {
 	void LateUpdate(){
 		if (util.time.paused) {return;}
 
-		Vector3 characterOffset = follow.position + new Vector3 (0f, 1.5f, 0f);
+		Vector3 characterOffset = follow.position + new Vector3 (0f, 3f, 0f);
 
 		if (state == CamState.Follow) {
 			lookDir = characterOffset - this.transform.position;
@@ -107,6 +107,7 @@ public class CameraController : MonoBehaviour {
 		RaycastHit wallHit = new RaycastHit ();
 		if (Physics.Linecast (fromObject, toTarget, out wallHit)) {
 			toTarget = new Vector3 (wallHit.point.x, toTarget.y, wallHit.point.z);
+			toTarget = toTarget + wallHit.normal * 1f;
 		}
 	}
 }

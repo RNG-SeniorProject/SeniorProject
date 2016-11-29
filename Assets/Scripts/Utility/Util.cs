@@ -61,4 +61,12 @@ public class Util : MonoBehaviour{
 	public PreySpawnController preySpawn;
 
 	public Terrain ter;
+
+	public GameObject tutorials;
+
+	public Text attackbase;
+	public Text attackBleed;
+	public Text attackHeal;
+
+	public GameObject gameOver;
 }

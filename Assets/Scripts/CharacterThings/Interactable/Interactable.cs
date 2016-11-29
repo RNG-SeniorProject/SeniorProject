@@ -25,6 +25,9 @@ public abstract class Interactable : MonoBehaviour{
 	public abstract void interact (GameObject chr);
 
 	void OnTriggerEnter(Collider hit){
+		if (util.time.paused == true)
+			return;
+
 		if (hit.GetComponent<InteractionController> () != null) {
 			triggerEnter (hit);
 		}
@@ -37,6 +40,9 @@ public abstract class Interactable : MonoBehaviour{
 	}
 
 	void OnTriggerExit(Collider hit){
+		if (util.time.paused == true)
+			return;
+
 		if (hit.GetComponent<InteractionController> () != null) {
 			triggerExit (hit);
 		}

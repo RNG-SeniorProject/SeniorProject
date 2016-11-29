@@ -5,7 +5,7 @@ public class TimeController : MonoBehaviour {
 	public bool paused;
 
 	void Start () {
-		pause ();
+		paused = true;
 	}
 	
 	public void resume(){

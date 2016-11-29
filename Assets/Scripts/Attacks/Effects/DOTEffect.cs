@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class DOTEffect : Effect {
+	private Util util;
 
 	[SerializeField]
 	protected float damagePerTic;
@@ -12,6 +13,10 @@ public class DOTEffect : Effect {
 	protected float duration;
 	//[SerializeField]
 	//protected List<Util.StatusCondition> statusEffects;
+
+	void Start(){
+		util = GameObject.Find ("GameManager").GetComponent<Util> ();
+	}
 
 	public override void activateEffect (GameObject chr) {
 		StartCoroutine (performEffect (chr));
@@ -25,5 +30,13 @@ public class DOTEffect : Effect {
 			timer += 1/tickPerSec;
 			yield return new WaitForSeconds (1/tickPerSec);	
 		}	
+	}
+
+	public override void changeText(){
+		if (util.attackBleed.IsActive ()) {
+			util.attackBleed.text = "Your attacks cause a stronger bleed!";
+		}
+
+		util.attackBleed.gameObject.SetActive (true);
 	}
 }
