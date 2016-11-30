@@ -9,8 +9,8 @@ public class PreyLeaderController : MonoBehaviour {
 		preyHerdController = transform.parent.GetComponent ("PreyHerdController") as PreyHerdController;
 	}
 
-	public void StartFleeing () {
-		preyHerdController.StartFleeing ();
+	public void StartFleeing (Vector3 enemyPos) {
+		preyHerdController.StartFleeing (enemyPos);
 	}
 
 	public void StopFleeing () {

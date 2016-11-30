@@ -64,9 +64,9 @@ public class PreyController : MonoBehaviour {
 
 		if (!alarmed && (enemyPos - transform.position).magnitude < chaseRange) {
 			if (herdLeader != null) {
-				herdLeaderController.StartFleeing ();
+				herdLeaderController.StartFleeing (enemyPos);
 			} else {
-				StartFleeing ();
+				StartFleeing (enemyPos);
 			}
 		} else if (alarmed && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange)) {
 			StopFleeing ();
@@ -122,7 +122,8 @@ public class PreyController : MonoBehaviour {
 		idleWalking = false;
 	}
 
-	public void StartFleeing () {
+	public void StartFleeing (Vector3 newEnemyPos) {
+		enemyPos = newEnemyPos;
 		alarmed = true;
 		idleWalking = false;
 	}

@@ -11,8 +11,8 @@ public class PredatorLeaderController : MonoBehaviour {
 			Debug.Log ("PredatorPackController not found [PredatorLeaderController]");
 	}
 
-	public void StartChasing () {
-		predatorPackController.StartChasing ();
+	public void StartChasing (GameObject enemy) {
+		predatorPackController.StartChasing (enemy);
 	}
 
 	public void StopChasing () {

@@ -83,7 +83,7 @@ public class PredatorController : MonoBehaviour {
 			if (hit.gameObject.GetComponent<Destructible> () != null) {
 				if (hit.gameObject.tag != "Enemy") {
 					float angle = Vector3.Angle (hit.gameObject.transform.position - transform.position, transform.forward);
-					if (angle < visionAngle) {
+					if (Mathf.Abs(angle) < visionAngle) {
 						enemiesInRange.Add (hit.gameObject);
 					}
 				}
@@ -92,15 +92,17 @@ public class PredatorController : MonoBehaviour {
 
 		if (enemiesInRange.Count > 0) {
 			enemy = enemiesInRange [Random.Range (0, enemiesInRange.Count)];
+		}
+		if (enemy != null) {
 			enemyPos = enemy.transform.position;
 		}
 
 		// if target is within the angle of vision and within chase range
 		if (!targeted && enemy != null && (enemyPos - transform.position).magnitude < chaseRange) {
 			if (packLeader != null) {
-				packLeaderController.StartChasing ();
+				packLeaderController.StartChasing (enemy);
 			} else {
-				StartChasing ();
+				StartChasing (enemy);
 			}
 		} else if (targeted && (enemyPos - transform.position).magnitude > (rangeMultiplier * chaseRange)) { // target gets out of leader chase range
 			if (packLeader != null && gameObject.GetInstanceID() == packLeader.GetInstanceID()) {
@@ -171,8 +173,10 @@ public class PredatorController : MonoBehaviour {
 		animator.SetFloat ("Speed", 1.0f);
 	}
 
-	public void StartChasing () {
+	public void StartChasing (GameObject newEnemy) {
 		if (!waitingToChase) {
+			enemy = newEnemy;
+			enemyPos = enemy.transform.position;
 			targeted = true;
 			waitingToBreak = true;
 			StartCoroutine ("ChaseWarmup", chaseCooldown);

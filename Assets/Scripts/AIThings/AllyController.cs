@@ -85,7 +85,7 @@ public class AllyController : MonoBehaviour {
 					if (hit.gameObject.GetComponent<Destructible> () != null) {
 						if (hit.gameObject.tag != myTag && hit.gameObject.tag != tagToIgnore) {
 							float angle = Vector3.Angle (hit.gameObject.transform.position - transform.position, transform.forward);
-							if (angle < visionAngle) {
+							if (Mathf.Abs(angle) < visionAngle) {
 								enemiesInRange.Add (hit.gameObject);
 							}
 						}

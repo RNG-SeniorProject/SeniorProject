@@ -17,10 +17,10 @@ public class PredatorPackController : MonoBehaviour {
 		}
 	}
 
-	public void StartChasing () {
+	public void StartChasing (GameObject enemy) {
 		for (int i = 0; i < predatorControllers.Length; i++) {
 			if (predatorControllers [i].gameObject != null) {
-				predatorControllers [i].StartChasing ();
+				predatorControllers [i].StartChasing (enemy);
 			}
 		}
 	}

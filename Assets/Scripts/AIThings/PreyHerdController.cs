@@ -17,15 +17,19 @@ public class PreyHerdController : MonoBehaviour {
 		}
 	}
 
-	public void StartFleeing () {
+	public void StartFleeing (Vector3 enemyPos) {
 		for (int i = 0; i < preyControllers.Length; i++) {
-			preyControllers[i].StartFleeing ();
+			if (preyControllers [i].gameObject != null) {
+				preyControllers [i].StartFleeing (enemyPos);
+			}
 		}
 	}
 
 	public void StopFleeing () {
 		for (int i = 0; i < preyControllers.Length; i++) {
-			preyControllers[i].StopFleeing ();
+			if (preyControllers [i].gameObject != null) {
+				preyControllers [i].StopFleeing ();
+			}
 		}
 	}
 

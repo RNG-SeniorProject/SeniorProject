@@ -20,7 +20,7 @@ public class EnemyDen : Interactable {
 	}
 
 	public override void interact (GameObject chr){
-		if (pack.transform.childCount > 0) {
+		if (pack != null && pack.transform.childCount > 0) {
 			uiManager.displayWarning ("Enemies are still around.");
 			return;
 		}
