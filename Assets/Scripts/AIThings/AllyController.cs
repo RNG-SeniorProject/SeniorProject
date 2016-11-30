@@ -24,6 +24,7 @@ public class AllyController : MonoBehaviour {
 	public bool followPlayer;
 
 	public float idleRange = 10;
+	public float visionAngle = 60;
 	public int chaseCooldown = 1;
 
 	void Start () {
@@ -83,7 +84,10 @@ public class AllyController : MonoBehaviour {
 				foreach (Collider hit in enemies) {
 					if (hit.gameObject.GetComponent<Destructible> () != null) {
 						if (hit.gameObject.tag != myTag && hit.gameObject.tag != tagToIgnore) {
-							enemiesInRange.Add (hit.gameObject);
+							float angle = Vector3.Angle (hit.gameObject.transform.position - transform.position, transform.forward);
+							if (angle < visionAngle) {
+								enemiesInRange.Add (hit.gameObject);
+							}
 						}
 					}
 				}

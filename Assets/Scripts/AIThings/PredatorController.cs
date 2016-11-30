@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PredatorController : MonoBehaviour {
 
@@ -18,7 +19,7 @@ public class PredatorController : MonoBehaviour {
 	private Vector3 enemyPos;
 	private bool waitingToBreak;
 	private bool waitingToChase;
-
+	List<GameObject> enemiesInRange;
 	private AudioSource aggressiveAudio;
 
 	public float chaseRange = 10;
@@ -75,14 +76,23 @@ public class PredatorController : MonoBehaviour {
 	}
 
 	void Update () {
+		enemiesInRange = new List<GameObject> ();
 		Collider[] enemies = Physics.OverlapSphere (transform.position, chaseRange);
+
 		foreach (Collider hit in enemies) {
 			if (hit.gameObject.GetComponent<Destructible> () != null) {
 				if (hit.gameObject.tag != "Enemy") {
-					enemy = hit.gameObject;
-					enemyPos = hit.gameObject.transform.position;
+					float angle = Vector3.Angle (hit.gameObject.transform.position - transform.position, transform.forward);
+					if (angle < visionAngle) {
+						enemiesInRange.Add (hit.gameObject);
+					}
 				}
 			}
+		}
+
+		if (enemiesInRange.Count > 0) {
+			enemy = enemiesInRange [Random.Range (0, enemiesInRange.Count)];
+			enemyPos = enemy.transform.position;
 		}
 
 		// if target is within the angle of vision and within chase range
