@@ -58,7 +58,6 @@ public class MeleeAttack: Attack {
 			Debug.DrawRay (chr.transform.position, chr.transform.forward, Color.black, 2f);
 
 			//if (Vector3.Dot (myPos.normalized, plrToEnemy.normalized) >= sweep) {
-			print(Vector3.Angle(myPos, plrToEnemy));
 			if (Vector3.Angle(myPos, plrToEnemy) < sweep){
 				Destructible stats = enemy.GetComponent<Destructible> ();
 

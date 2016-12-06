@@ -209,11 +209,17 @@ public class UIManager : MonoBehaviour {
 	public void pause(){
 		time.pause ();
 		pauseScreen.gameObject.SetActive (true);
+
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
 
 	public void unpause(){
 		time.resume ();
 		pauseScreen.gameObject.SetActive (false);
+
+		Cursor.visible = false;
+		Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	public void revealMigrateWarning(){

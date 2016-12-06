@@ -53,7 +53,7 @@ public class CharacterLogic : MonoBehaviour {
 
 			if (gamecam.state == CameraController.CamState.Follow) {
 
-				stickToWorldspace (this.transform, gamecam.transform, ref direction, ref speed);
+				inputRelativeDirection (transform, gamecam.transform, ref direction, ref speed);
 
 				animator.SetFloat ("Speed", speed);
 				//animator.SetFloat ("Direction", direction, directionDampTime, Time.deltaTime);
@@ -65,7 +65,7 @@ public class CharacterLogic : MonoBehaviour {
 					transform.position = transform.position + (transform.forward * ver * Time.deltaTime * 5);
 				}*/
 				Quaternion deltaRotation = Quaternion.Euler (new Vector3(0, rotationDegreePerSecond * mouseHor, 0));
-				this.transform.rotation = Quaternion.Slerp(this.transform.rotation, this.transform.rotation * deltaRotation, 2 * Time.deltaTime);
+				this.transform.rotation = Quaternion.Slerp(transform.rotation, transform.rotation * deltaRotation, 2 * Time.deltaTime);
 			}
 		}
 	}
@@ -80,13 +80,14 @@ public class CharacterLogic : MonoBehaviour {
 
 		if (inLocomotion () &&((direction >= 0 && hor >= 0) || (direction < 0 && hor < 0))) {
 			Vector3 rotationAmount = Vector3.Lerp (Vector3.zero, new Vector3 (0f, rotationDegreePerSecond * (hor < 0f ? -1f : 1f), 0f), Mathf.Abs (hor));
-				
+
 			Quaternion deltaRotation = Quaternion.Euler ((rotationAmount) * Time.deltaTime);
-			this.transform.rotation = (this.transform.rotation * deltaRotation);
+
+			transform.rotation = (transform.rotation * deltaRotation);
 		}
 	}
 
-	public void stickToWorldspace(Transform root, Transform camera, ref float directionOut, ref float speedOut){
+	public void inputRelativeDirection(Transform root, Transform camera, ref float directionOut, ref float speedOut){
 		Vector3 rootDirection = root.forward;
 		Vector3 inputDirection = new Vector3 (hor, 0, ver);
 
@@ -98,6 +99,9 @@ public class CharacterLogic : MonoBehaviour {
 
 		Vector3 moveDirection = refShift * inputDirection;
 		plrMoveDirection = moveDirection;
+
+		//Debug.DrawRay (transform.position + new Vector3(0, 1.5, 0), plrMoveDirection, Color.red);
+
 		Vector3 axisSign = Vector3.Cross (moveDirection, rootDirection);
 
 		float angleRootToMove = Vector3.Angle (rootDirection, moveDirection) * (axisSign.y >= 0 ? -1f : 1f);
